@@ -22,7 +22,12 @@ public class Kurnik extends Frame {
         fieldsX = 20;
         fieldsY = 10;
         zwierzeta = new LinkedList<Kura>();
-        zwierzeta.add(new Kura(2, 7));
+        zwierzeta.add(new Kura(100.f, 0.f, new Point(5, 5), 100, 1000, 1000.f, 200.f));
+        zwierzeta.add(new Kura(100.f, 0.f, new Point(5, 5), 100, 10000, 1000.f, 200.f));
+        zwierzeta.add(new Kura(100.f, 0.f, new Point(5, 5), 100, 50, 1000.f, 200.f));
+        zwierzeta.add(new Kura(100.f, 0.f, new Point(5, 5), 100, 2000, 1000.f, 200.f));
+        zwierzeta.add(new Kura(100.f, 0.f, new Point(5, 5), 100, 10000, 1000.f, 200.f));
+        zwierzeta.add(new Kura(100.f, 0.f, new Point(5, 5), 100, 5000, 1000.f, 200.f));
 
         setVisible(true);
         addWindowListener(new WindowAdapter() {
@@ -40,10 +45,13 @@ public class Kurnik extends Frame {
         try {
             while (getWindows().length > 0) {
                 Thread.sleep(1000);
-                int x = zwierzeta.getFirst().x + rand.nextInt() % 3 - 1;
-                int y = zwierzeta.getFirst().y + rand.nextInt() % 3 - 1;
-                if (x >= 0 && x < fieldsX) zwierzeta.getFirst().x = x;
-                if (y >= 0 && y < fieldsX) zwierzeta.getFirst().y = y;
+                for( Kura kura : zwierzeta) {
+                    int x = kura.pozycja.x + rand.nextInt() % 3 - 1;
+                    int y = kura.pozycja.y + rand.nextInt() % 3 - 1;
+                    if (x >= 0 && x < fieldsX) kura.pozycja.x = x;
+                    if (y >= 0 && y < fieldsX) kura.pozycja.y = y;
+                }
+                zwierzeta.removeIf(k -> (k.starzej() == ACTIONS.ZABIJ_SIE));
                 this.repaint();
                 System.out.println(".");
             }
@@ -55,7 +63,9 @@ public class Kurnik extends Frame {
     public void paint(Graphics g) {
         drawGrid(g);
         drawObject(g, 2, 3, Color.BLUE, "poidełko");
-        drawObject(g, zwierzeta.getFirst().x, zwierzeta.getFirst().y, Color.YELLOW, "kura");
+        for(Kura kura : zwierzeta) {
+            drawObject(g, kura.pozycja.x, kura.pozycja.y, Color.YELLOW, "kura");
+        }
     }
 
     private int scaleX(int x) {
@@ -94,12 +104,3 @@ public class Kurnik extends Frame {
     }
 }
 
-class Kura {
-    public int x;
-    public int y;
-
-    Kura(int positionX, int positionY) {
-        x = positionX;
-        y = positionY;
-    }
-}
