@@ -1,3 +1,7 @@
+package zwierzeta;
+
+import java.awt.*;
+
 public abstract class Drob extends Zwierze {
     long wiek;
     long wiekSmierci;
@@ -11,7 +15,7 @@ public abstract class Drob extends Zwierze {
         smiertelnyDeficytKalorii = _smiertelnyDeficytKalorii;
         smiertelnyDeficytWody = _smiertelnyDeficytWody;
     }
-    ACTIONS starzej(){
+    public ACTIONS starzej(){
        wiek += 100;
        if(wiekSmierci < wiek)
        return ACTIONS.ZABIJ_SIE;
@@ -19,7 +23,3 @@ public abstract class Drob extends Zwierze {
     }
 }
 
-enum ACTIONS{
-    ZABIJ_SIE,
-    NIC
-}
