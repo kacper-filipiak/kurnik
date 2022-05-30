@@ -10,7 +10,7 @@ public abstract class Zwierze {
     ReentrantLock lock = new ReentrantLock();
     Thread thread = new Thread();
 
-    public ACTIONS chce = null;
+    public ACTIONS chce = ACTIONS.NIC;
     public Point pozycja;
     float zapotrzebowanieEnergetyczne;
     float glod;
@@ -26,12 +26,12 @@ public abstract class Zwierze {
 
     public void jedz(float kalorie) {
         glod -= kalorie;
-        chce = null;
+        chce = ACTIONS.NIC;
     }
 
     public void pij(float litry) {
         pragnienie -= litry;
-        chce = null;
+        chce = ACTIONS.NIC;
     }
 
     public void poruszajSie(Point point) {

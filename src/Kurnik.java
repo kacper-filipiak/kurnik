@@ -23,8 +23,8 @@ public class Kurnik extends Frame implements EventBus {
         super("Java 2D Kurnik");
         EventSubscriber.subscribe(this);
         setSize(400, 300);
-        fieldsX = 20;
-        fieldsY = 10;
+        fieldsX = 40;
+        fieldsY = 20;
         zwierzeta.add(new Kura(100.f, 0.f, 0.f, new Point(5, 5), 100, 1000, 1000.f, 200.f));
         zwierzeta.add(new Kura(100.f, 0.f, 0.f, new Point(5, 5), 100, 10000, 1000.f, 200.f));
         zwierzeta.add(new Kura(100.f, 0.f, 0.f, new Point(5, 5), 100, 50, 1000.f, 200.f));
@@ -33,8 +33,8 @@ public class Kurnik extends Frame implements EventBus {
         zwierzeta.add(new Kura(100.f, 0.f, 0.f, new Point(5, 5), 100, 5000, 1000.f, 200.f));
 
         urzadzenia.add(new Poidlo(new Point(1, 4), 4, 4.f, 4.f));
-        urzadzenia.add(new Pasnik(new Point(6, 8), 4, 10.f, new Pasza()));
-        urzadzenia.add(new Gniazdo(new Point(4, 5), 3, List.of()));
+        urzadzenia.add(new Pasnik(new Point(16, 18), 4, 10.f, new Pasza()));
+        urzadzenia.add(new Gniazdo(new Point(24, 5), 3 ));
 
         setVisible(true);
         addWindowListener(new WindowAdapter() {
@@ -68,7 +68,7 @@ public class Kurnik extends Frame implements EventBus {
                                 poidlo = (Poidlo) urzadzenie;
                             }
                         }
-                        if (destination == kura.pozycja) {
+                        if (destination.x == kura.pozycja.x && destination.y == kura.pozycja.y) {
                             assert poidlo != null;
                             kura.pij(poidlo.wydajWode());
                         } else if (destination.x >= 0 && destination.x < fieldsX && destination.y >= 0 && destination.y < fieldsY)
@@ -83,7 +83,7 @@ public class Kurnik extends Frame implements EventBus {
                                 pasnik = (Pasnik) urzadzenie;
                             }
                         }
-                        if (destination == kura.pozycja) {
+                        if (destination.x == kura.pozycja.x && destination.y == kura.pozycja.y) {
                             assert pasnik != null;
                             Pasza pasza = pasnik.wydajPasze();
                             kura.jedz(pasza.getEnergie());
@@ -99,7 +99,7 @@ public class Kurnik extends Frame implements EventBus {
                                 gniazdo = (Gniazdo) urzadzenie;
                             }
                         }
-                        if (destination == kura.pozycja) {
+                        if (destination.x == kura.pozycja.x && destination.y == kura.pozycja.y) {
                             assert gniazdo != null;
                             gniazdo.dodajJajo(kura.zlozJajko());
                         } else if (destination.x >= 0 && destination.x < fieldsX && destination.y >= 0 && destination.y < fieldsY)

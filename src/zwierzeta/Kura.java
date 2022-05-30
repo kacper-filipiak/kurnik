@@ -3,6 +3,7 @@ package zwierzeta;
 
 import inne.ACTIONS;
 import inne.GlobalRandom;
+import org.jetbrains.annotations.NotNull;
 
 import java.awt.*;
 import java.util.Random;
@@ -21,24 +22,26 @@ public class Kura extends Drob {
     public Jajko zlozJajko() {
         Jajko jajo = new Jajko(zaplodniona, GlobalRandom.rand.nextLong(1000));
         zaplodniona = false;
-        chce = null;
+        chce = ACTIONS.NIC;
         return jajo;
     }
 
     public ACTIONS wysiadujJajko(Jajko jajo){
-        chce = null;
+        chce = ACTIONS.NIC;
         return jajo.zaktualizujWysiadywanie(100);
     }
 
+    @NotNull
     @Override
     public ACTIONS decyduj() {
-        if(chce == null) chce = switch (GlobalRandom.rand.nextInt(4)) {
+        if(chce == ACTIONS.NIC) chce = switch (GlobalRandom.rand.nextInt(4)) {
             case 0 -> ACTIONS.BIEGAJ;
             case 1 -> ACTIONS.JEDZ;
             case 2 -> ACTIONS.PIJ;
             case 3 -> ACTIONS.WYSIADUJ_JAJO;
             default -> ACTIONS.NIC;
         };
+        if(chce == null) chce = ACTIONS.NIC;
         return chce;
     }
 }
