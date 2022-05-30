@@ -1,4 +1,6 @@
 import inne.ACTIONS;
+import inne.EventBus;
+import inne.EventSubscriber;
 import zwierzeta.Kura;
 
 import java.awt.*;
@@ -7,7 +9,7 @@ import java.awt.event.WindowEvent;
 import java.util.LinkedList;
 import java.util.Random;
 
-public class Kurnik extends Frame {
+public class Kurnik extends Frame implements EventBus {
 
     final private int fieldsX;
     final private int fieldsY;
@@ -16,16 +18,17 @@ public class Kurnik extends Frame {
 
     Kurnik() {
         super("Java 2D Kurnik");
+        EventSubscriber.subscribe(this);
         setSize(400, 300);
         fieldsX = 20;
         fieldsY = 10;
         zwierzeta = new LinkedList<Kura>();
-        zwierzeta.add(new Kura(100.f, 0.f, new Point(5, 5), 100, 1000, 1000.f, 200.f));
-        zwierzeta.add(new Kura(100.f, 0.f, new Point(5, 5), 100, 10000, 1000.f, 200.f));
-        zwierzeta.add(new Kura(100.f, 0.f, new Point(5, 5), 100, 50, 1000.f, 200.f));
-        zwierzeta.add(new Kura(100.f, 0.f, new Point(5, 5), 100, 2000, 1000.f, 200.f));
-        zwierzeta.add(new Kura(100.f, 0.f, new Point(5, 5), 100, 10000, 1000.f, 200.f));
-        zwierzeta.add(new Kura(100.f, 0.f, new Point(5, 5), 100, 5000, 1000.f, 200.f));
+        zwierzeta.add(new Kura(100.f, 0.f,0.f, new Point(5, 5), 100, 1000, 1000.f, 200.f));
+        zwierzeta.add(new Kura(100.f, 0.f,0.f, new Point(5, 5), 100, 10000, 1000.f, 200.f));
+        zwierzeta.add(new Kura(100.f, 0.f,0.f, new Point(5, 5), 100, 50, 1000.f, 200.f));
+        zwierzeta.add(new Kura(100.f, 0.f,0.f, new Point(5, 5), 100, 2000, 1000.f, 200.f));
+        zwierzeta.add(new Kura(100.f, 0.f,0.f, new Point(5, 5), 100, 10000, 1000.f, 200.f));
+        zwierzeta.add(new Kura(100.f, 0.f,0.f, new Point(5, 5), 100, 5000, 1000.f, 200.f));
 
         setVisible(true);
         addWindowListener(new WindowAdapter() {
@@ -51,8 +54,7 @@ public class Kurnik extends Frame {
                 for (Kura kura : zwierzeta) {
                     int x = kura.pozycja.x + rand.nextInt() % 3 - 1;
                     int y = kura.pozycja.y + rand.nextInt() % 3 - 1;
-                    if (x >= 0 && x < fieldsX) kura.pozycja.x = x;
-                    if (y >= 0 && y < fieldsX) kura.pozycja.y = y;
+                    if (x >= 0 && x < fieldsX && y >= 0 && y < fieldsY ) kura.poruszajSie(x, y);
                 }
                 zwierzeta.removeIf(k -> (k.starzej() == ACTIONS.ZABIJ_SIE));
                 this.repaint();
@@ -104,6 +106,11 @@ public class Kurnik extends Frame {
         g2d.setColor(Color.BLACK);
         g2d.setFont(new Font("Microsoft YaHei", Font.PLAIN, scaleSmaller(50)));
         g2d.drawString(text, x * rectWidth, (y + 1) * rectHeight);
+    }
+
+    @Override
+    public void onEvent() {
+        this.repaint();
     }
 }
 
