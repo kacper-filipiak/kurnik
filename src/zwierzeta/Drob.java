@@ -1,5 +1,7 @@
 package zwierzeta;
 
+import inne.ACTIONS;
+
 import java.awt.*;
 
 public abstract class Drob extends Zwierze {
@@ -15,11 +17,12 @@ public abstract class Drob extends Zwierze {
         smiertelnyDeficytKalorii = _smiertelnyDeficytKalorii;
         smiertelnyDeficytWody = _smiertelnyDeficytWody;
     }
-    public ACTIONS starzej(){
-       wiek += 100;
-       if(wiekSmierci < wiek)
-       return ACTIONS.ZABIJ_SIE;
-       else return ACTIONS.NIC;
+
+    public ACTIONS starzej() {
+        wiek += 100;
+        if (wiekSmierci < wiek)
+            return ACTIONS.ZABIJ_SIE;
+        else return ACTIONS.NIC;
     }
 }
 

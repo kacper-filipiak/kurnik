@@ -1,4 +1,4 @@
-import zwierzeta.ACTIONS;
+import inne.ACTIONS;
 import zwierzeta.Kura;
 
 import java.awt.*;
@@ -13,11 +13,6 @@ public class Kurnik extends Frame {
     final private int fieldsY;
 
     private final LinkedList<Kura> zwierzeta;
-
-    public static void main(String[] args) {
-        System.out.println("Starting");
-        new Kurnik();
-    }
 
     Kurnik() {
         super("Java 2D Kurnik");
@@ -43,12 +38,17 @@ public class Kurnik extends Frame {
         loop();
     }
 
+    public static void main(String[] args) {
+        System.out.println("Starting");
+        new Kurnik();
+    }
+
     void loop() {
         Random rand = new Random();
         try {
             while (getWindows().length > 0) {
                 Thread.sleep(1000);
-                for( Kura kura : zwierzeta) {
+                for (Kura kura : zwierzeta) {
                     int x = kura.pozycja.x + rand.nextInt() % 3 - 1;
                     int y = kura.pozycja.y + rand.nextInt() % 3 - 1;
                     if (x >= 0 && x < fieldsX) kura.pozycja.x = x;
@@ -66,7 +66,7 @@ public class Kurnik extends Frame {
     public void paint(Graphics g) {
         drawGrid(g);
         drawObject(g, 2, 3, Color.BLUE, "poidełko");
-        for(Kura kura : zwierzeta) {
+        for (Kura kura : zwierzeta) {
             drawObject(g, kura.pozycja.x, kura.pozycja.y, Color.YELLOW, "kura");
         }
     }

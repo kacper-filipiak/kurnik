@@ -1,7 +1,19 @@
 package urzadzenia;
 
-public class Pasnik extends urzadzenia{
-    public Pasnik(Point _pozycja, int _liczbaStanowisk, float _pojemnosc){
-        super(_pozycja, _liczbaStanowisk, _pojemnosc);
+import java.awt.*;
+
+public class Pasnik extends Urzadzenie {
+    float pojemnosc;
+    Pasza zawartosc;
+
+    public Pasnik(Point _pozycja, int _liczbaStanowisk, float _pojemnosc, Pasza _zawartosc) {
+        super(_pozycja, _liczbaStanowisk);
+        pojemnosc = _pojemnosc;
+        zawartosc = _zawartosc;
+    }
+
+    @Override
+    boolean zajmijStanowisko() {
+        return false;
     }
 }
