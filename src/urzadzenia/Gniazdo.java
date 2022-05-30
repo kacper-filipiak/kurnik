@@ -8,7 +8,7 @@ import java.util.List;
 public class Gniazdo extends Urzadzenie {
     List<Jajko> jajka;
 
-    Gniazdo(Point _pozycja, int _liczbaStanowisk, List<Jajko> _jajka) {
+    public Gniazdo(Point _pozycja, int _liczbaStanowisk, List<Jajko> _jajka) {
         super(_pozycja, _liczbaStanowisk);
         jajka = _jajka;
     }
@@ -16,5 +16,9 @@ public class Gniazdo extends Urzadzenie {
     @Override
     boolean zajmijStanowisko() {
         return false;
+    }
+
+    public void dodajJajo(Jajko jajo){
+        jajka.add(jajo);
     }
 }

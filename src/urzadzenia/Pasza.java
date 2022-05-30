@@ -1,6 +1,6 @@
 package urzadzenia;
 
-public abstract class Pasza {
+public class Pasza {
     float kalorycznosc;
     float masa;
 
@@ -9,4 +9,7 @@ public abstract class Pasza {
         masa = _masa;
     }
 
+    public float getEnergie(){
+        return kalorycznosc * masa;
+    }
 }

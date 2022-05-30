@@ -1,5 +1,6 @@
 package zwierzeta;
 
+import inne.ACTIONS;
 import inne.EventSubscriber;
 
 import java.awt.*;
@@ -8,6 +9,8 @@ import java.util.concurrent.locks.ReentrantLock;
 public abstract class Zwierze {
     ReentrantLock lock = new ReentrantLock();
     Thread thread = new Thread();
+
+    public ACTIONS chce = null;
     public Point pozycja;
     float zapotrzebowanieEnergetyczne;
     float glod;
@@ -21,21 +24,23 @@ public abstract class Zwierze {
         pozycja = _pozycja;
     }
 
-    void jedz(float kalorie) {
+    public void jedz(float kalorie) {
         glod -= kalorie;
+        chce = null;
     }
 
-    void pragnienie(float litry) {
+    public void pij(float litry) {
         pragnienie -= litry;
+        chce = null;
     }
 
-    public void poruszajSie(int x, int y) {
+    public void poruszajSie(Point point) {
         if (!thread.isAlive()) {
             thread = new Thread(() -> {
                 lock.lock();
-                while (pozycja.x != x || pozycja.y != y) {
-                    if(pozycja.x != x)pozycja.x += (pozycja.x - x) < 0 ? 1 : -1;
-                    if(pozycja.y != y)pozycja.y += (pozycja.y - y) < 0 ? 1 : -1;
+                while (pozycja.x != point.x || pozycja.y != point.y) {
+                    if(pozycja.x != point.x)pozycja.x += (pozycja.x - point.x) < 0 ? 1 : -1;
+                    if(pozycja.y != point.y)pozycja.y += (pozycja.y - point.y) < 0 ? 1 : -1;
                     EventSubscriber.publishEvent();
                     try {
                         Thread.sleep(100);
@@ -48,4 +53,6 @@ public abstract class Zwierze {
             thread.start();
         }
     }
+
+    abstract public ACTIONS decyduj();
 }

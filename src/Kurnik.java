@@ -1,20 +1,23 @@
-import inne.ACTIONS;
 import inne.EventBus;
 import inne.EventSubscriber;
+import inne.GlobalRandom;
+import urzadzenia.*;
 import zwierzeta.Kura;
 
 import java.awt.*;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
 import java.util.LinkedList;
-import java.util.Random;
+import java.util.List;
 
 public class Kurnik extends Frame implements EventBus {
 
     final private int fieldsX;
     final private int fieldsY;
 
-    private final LinkedList<Kura> zwierzeta;
+    private final LinkedList<Kura> zwierzeta = new LinkedList<>();
+
+    private LinkedList<Urzadzenie> urzadzenia = new LinkedList<>();
 
     Kurnik() {
         super("Java 2D Kurnik");
@@ -22,13 +25,16 @@ public class Kurnik extends Frame implements EventBus {
         setSize(400, 300);
         fieldsX = 20;
         fieldsY = 10;
-        zwierzeta = new LinkedList<Kura>();
-        zwierzeta.add(new Kura(100.f, 0.f,0.f, new Point(5, 5), 100, 1000, 1000.f, 200.f));
-        zwierzeta.add(new Kura(100.f, 0.f,0.f, new Point(5, 5), 100, 10000, 1000.f, 200.f));
-        zwierzeta.add(new Kura(100.f, 0.f,0.f, new Point(5, 5), 100, 50, 1000.f, 200.f));
-        zwierzeta.add(new Kura(100.f, 0.f,0.f, new Point(5, 5), 100, 2000, 1000.f, 200.f));
-        zwierzeta.add(new Kura(100.f, 0.f,0.f, new Point(5, 5), 100, 10000, 1000.f, 200.f));
-        zwierzeta.add(new Kura(100.f, 0.f,0.f, new Point(5, 5), 100, 5000, 1000.f, 200.f));
+        zwierzeta.add(new Kura(100.f, 0.f, 0.f, new Point(5, 5), 100, 1000, 1000.f, 200.f));
+        zwierzeta.add(new Kura(100.f, 0.f, 0.f, new Point(5, 5), 100, 10000, 1000.f, 200.f));
+        zwierzeta.add(new Kura(100.f, 0.f, 0.f, new Point(5, 5), 100, 50, 1000.f, 200.f));
+        zwierzeta.add(new Kura(100.f, 0.f, 0.f, new Point(5, 5), 100, 2000, 1000.f, 200.f));
+        zwierzeta.add(new Kura(100.f, 0.f, 0.f, new Point(5, 5), 100, 10000, 1000.f, 200.f));
+        zwierzeta.add(new Kura(100.f, 0.f, 0.f, new Point(5, 5), 100, 5000, 1000.f, 200.f));
+
+        urzadzenia.add(new Poidlo(new Point(1, 4), 4, 4.f, 4.f));
+        urzadzenia.add(new Pasnik(new Point(6, 8), 4, 10.f, new Pasza()));
+        urzadzenia.add(new Gniazdo(new Point(4, 5), 3, List.of()));
 
         setVisible(true);
         addWindowListener(new WindowAdapter() {
@@ -47,29 +53,91 @@ public class Kurnik extends Frame implements EventBus {
     }
 
     void loop() {
-        Random rand = new Random();
-        try {
-            while (getWindows().length > 0) {
-                Thread.sleep(1000);
-                for (Kura kura : zwierzeta) {
-                    int x = kura.pozycja.x + rand.nextInt() % 3 - 1;
-                    int y = kura.pozycja.y + rand.nextInt() % 3 - 1;
-                    if (x >= 0 && x < fieldsX && y >= 0 && y < fieldsY ) kura.poruszajSie(x, y);
+//        try {
+        while (getWindows().length > 0) {
+//                Thread.sleep(1000);
+            for (Kura kura : zwierzeta) {
+                Point destination = new Point();
+                switch (kura.decyduj()) {
+                    case PIJ:
+                        Poidlo poidlo = null;
+                        for (Urzadzenie urzadzenie :
+                                urzadzenia) {
+                            if (urzadzenie instanceof Poidlo) {
+                                destination = urzadzenie.pozycja;
+                                poidlo = (Poidlo) urzadzenie;
+                            }
+                        }
+                        if (destination == kura.pozycja) {
+                            assert poidlo != null;
+                            kura.pij(poidlo.wydajWode());
+                        } else if (destination.x >= 0 && destination.x < fieldsX && destination.y >= 0 && destination.y < fieldsY)
+                            kura.poruszajSie(destination);
+                        break;
+                    case JEDZ:
+                        Pasnik pasnik = null;
+                        for (Urzadzenie urzadzenie :
+                                urzadzenia) {
+                            if (urzadzenie instanceof Pasnik) {
+                                destination = urzadzenie.pozycja;
+                                pasnik = (Pasnik) urzadzenie;
+                            }
+                        }
+                        if (destination == kura.pozycja) {
+                            assert pasnik != null;
+                            Pasza pasza = pasnik.wydajPasze();
+                            kura.jedz(pasza.getEnergie());
+                        } else if (destination.x >= 0 && destination.x < fieldsX && destination.y >= 0 && destination.y < fieldsY)
+                            kura.poruszajSie(destination);
+                        break;
+                    case WYSIADUJ_JAJO:
+                        Gniazdo gniazdo = null;
+                        for (Urzadzenie urzadzenie :
+                                urzadzenia) {
+                            if (urzadzenie instanceof Gniazdo) {
+                                destination = urzadzenie.pozycja;
+                                gniazdo = (Gniazdo) urzadzenie;
+                            }
+                        }
+                        if (destination == kura.pozycja) {
+                            assert gniazdo != null;
+                            gniazdo.dodajJajo(kura.zlozJajko());
+                        } else if (destination.x >= 0 && destination.x < fieldsX && destination.y >= 0 && destination.y < fieldsY)
+                            kura.poruszajSie(destination);
+                        break;
+                    case ZABIJ_SIE:
+                        zwierzeta.remove(kura);
+                        break;
+                    case BIEGAJ:
+                        destination = new Point(GlobalRandom.rand.nextInt(fieldsX), GlobalRandom.rand.nextInt(fieldsY));
+                        if (destination.x >= 0 && destination.x < fieldsX && destination.y >= 0 && destination.y < fieldsY)
+                            kura.poruszajSie(destination);
+                        kura.chce = null;
+                        break;
+                    default:
+                        System.out.println("No action");
+                        break;
                 }
-                zwierzeta.removeIf(k -> (k.starzej() == ACTIONS.ZABIJ_SIE));
-                this.repaint();
-                System.out.println(".");
             }
-        } catch (InterruptedException e) {
-
+//                zwierzeta.removeIf(k -> (k.starzej() == ACTIONS.ZABIJ_SIE));
+            this.repaint();
+            System.out.println(".");
         }
+//        } catch (InterruptedException e) {
+//
+//        }
     }
 
     public void paint(Graphics g) {
         drawGrid(g);
-        drawObject(g, 2, 3, Color.BLUE, "poidełko");
         for (Kura kura : zwierzeta) {
-            drawObject(g, kura.pozycja.x, kura.pozycja.y, Color.YELLOW, "kura");
+            drawObject(g, kura.pozycja, Color.YELLOW, "kura");
+        }
+        for (Urzadzenie urzadzenie :
+                urzadzenia) {
+            if (urzadzenie instanceof Poidlo) drawObject(g, urzadzenie.pozycja, Color.BLUE, "Poidełko");
+            if (urzadzenie instanceof Pasnik) drawObject(g, urzadzenie.pozycja, Color.GREEN, "Paśnik");
+            if (urzadzenie instanceof Gniazdo) drawObject(g, urzadzenie.pozycja, Color.orange, "Gniazdo");
         }
     }
 
@@ -97,15 +165,15 @@ public class Kurnik extends Frame implements EventBus {
         }
     }
 
-    private void drawObject(Graphics g, int x, int y, Color color, String text) {
+    private void drawObject(Graphics g, Point point, Color color, String text) {
         Graphics2D g2d = (Graphics2D) g;
         int rectWidth = getWidth() / fieldsX;
         int rectHeight = getHeight() / fieldsY;
         g2d.setColor(color);
-        g2d.fillRect(x * rectWidth, y * rectHeight, rectWidth, rectHeight);
+        g2d.fillRect(point.x * rectWidth, point.y * rectHeight, rectWidth, rectHeight);
         g2d.setColor(Color.BLACK);
         g2d.setFont(new Font("Microsoft YaHei", Font.PLAIN, scaleSmaller(50)));
-        g2d.drawString(text, x * rectWidth, (y + 1) * rectHeight);
+        g2d.drawString(text, point.x * rectWidth, (point.y + 1) * rectHeight);
     }
 
     @Override

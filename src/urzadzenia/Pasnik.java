@@ -12,6 +12,11 @@ public class Pasnik extends Urzadzenie {
         zawartosc = _zawartosc;
     }
 
+    public Pasza wydajPasze(){
+        zawartosc.masa -= 100.f;
+        return zawartosc;
+    }
+
     @Override
     boolean zajmijStanowisko() {
         return false;
