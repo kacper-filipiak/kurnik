@@ -16,6 +16,8 @@ public class Jajko {
     public ACTIONS zaktualizujWysiadywanie(long czas) {
         czasWykluwania -= czas;
         if (czasWykluwania < 0 && zaplodnione) return ACTIONS.WYKLUJ_KURCZAKA;
-        else return null;
+        else if (czasWykluwania < -10) {
+            return ACTIONS.ZNISZCZ_JAJKO;
+        } else return null;
     }
 }

@@ -9,8 +9,7 @@ import java.awt.*;
 import java.util.Random;
 
 public class Kura extends Drob {
-    boolean zaplodniona = false;
-
+    private boolean zaplodniona = false;
     public void setZaplodniona(boolean zaplodniona) {
         this.zaplodniona = zaplodniona;
     }
@@ -34,11 +33,12 @@ public class Kura extends Drob {
     @NotNull
     @Override
     public ACTIONS decyduj() {
-        if(chce == ACTIONS.NIC) chce = switch (GlobalRandom.rand.nextInt(4)) {
+        if(chce == ACTIONS.NIC) chce = switch (GlobalRandom.rand.nextInt(7)) {
             case 0 -> ACTIONS.BIEGAJ;
             case 1 -> ACTIONS.JEDZ;
             case 2 -> ACTIONS.PIJ;
-            case 3 -> ACTIONS.WYSIADUJ_JAJO;
+            case 3, 4 -> ACTIONS.WYSIADUJ_JAJO;
+            case 5, 6 -> ACTIONS.ZLOZ_JAJKO;
             default -> ACTIONS.NIC;
         };
         if(chce == null) chce = ACTIONS.NIC;

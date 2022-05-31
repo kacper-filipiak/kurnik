@@ -1,5 +1,6 @@
 package urzadzenia;
 
+import org.jetbrains.annotations.Nullable;
 import zwierzeta.Jajko;
 
 import java.awt.*;
@@ -20,5 +21,14 @@ public class Gniazdo extends Urzadzenie {
 
     public void dodajJajo(Jajko jajo){
         jajka.add(jajo);
+    }
+
+    public void usunJajko(Jajko jajko){
+        jajka.remove(jajko);
+    }
+
+    @Nullable
+    public Jajko zwrocWolneJajko(){
+        return jajka.isEmpty()? null : jajka.get(0);
     }
 }
