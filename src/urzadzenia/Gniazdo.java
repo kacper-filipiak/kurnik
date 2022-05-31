@@ -12,6 +12,15 @@ public class Gniazdo extends Urzadzenie {
         super(_pozycja, _liczbaStanowisk);
         jajka = _jajka;
     }
+    Jajko zwrocWolneJajko(){
+        //TODO: not implemented yet
+    }
+    List<Jajko> zwrocWszystkieJajka(){
+        //TODO: not implemented yet
+    };
+    void usunJajko(jajko Jajko){
+        //TODO: not implemented yet
+    };
 
     @Override
     boolean zajmijStanowisko() {
