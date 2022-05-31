@@ -18,6 +18,11 @@ public class Pasnik extends Urzadzenie {
         //TODO: not implemented yet
     }
 
+    public Pasza wydajPasze(){
+        zawartosc.masa -= 100.f;
+        return zawartosc;
+    }
+
     @Override
     boolean zajmijStanowisko() {
         return false;

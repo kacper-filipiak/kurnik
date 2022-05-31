@@ -19,7 +19,11 @@ public class Poidlo extends Urzadzenie {
     }
 
     @Override
-    boolean zajmijStanowisko() {
+    public boolean zajmijStanowisko() {
         return false;
+    }
+
+    public float wydajWode(){
+        return 0.1f;
     }
 }

@@ -1,16 +1,17 @@
 package urzadzenia;
 
+import org.jetbrains.annotations.Nullable;
 import zwierzeta.Jajko;
 
 import java.awt.*;
+import java.util.LinkedList;
 import java.util.List;
 
 public class Gniazdo extends Urzadzenie {
-    List<Jajko> jajka;
+    List<Jajko> jajka = new LinkedList<>();
 
-    Gniazdo(Point _pozycja, int _liczbaStanowisk, List<Jajko> _jajka) {
+    public Gniazdo(Point _pozycja, int _liczbaStanowisk) {
         super(_pozycja, _liczbaStanowisk);
-        jajka = _jajka;
     }
     Jajko zwrocWolneJajko(){
         //TODO: not implemented yet
@@ -25,5 +26,18 @@ public class Gniazdo extends Urzadzenie {
     @Override
     boolean zajmijStanowisko() {
         return false;
+    }
+
+    public void dodajJajo(Jajko jajo){
+        jajka.add(jajo);
+    }
+
+    public void usunJajko(Jajko jajko){
+        jajka.remove(jajko);
+    }
+
+    @Nullable
+    public Jajko zwrocWolneJajko(){
+        return jajka.isEmpty()? null : jajka.get(0);
     }
 }

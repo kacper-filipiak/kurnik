@@ -1,6 +1,13 @@
 package inne;
 
 public enum ACTIONS {
+
+    PIJ,
+    JEDZ,
+    WYSIADUJ_JAJO,
     ZABIJ_SIE,
-    NIC
+    WYKLUJ_KURCZAKA,
+    ZAPLODNIJ_KURE,
+    BIEGAJ,
+    ZLOZ_JAJKO, ZNISZCZ_JAJKO, NIC
 }

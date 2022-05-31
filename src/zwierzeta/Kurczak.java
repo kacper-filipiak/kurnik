@@ -1,9 +1,24 @@
 package zwierzeta;
 
+import inne.ACTIONS;
+import inne.GlobalRandom;
+
 import java.awt.*;
 
 public class Kurczak extends Drob {
-    public Kurczak(float _zapotrzebowanie, float _glod, Point _pozycja, long _wiek, long _wiekSmierci, float _smiertelnyDeficytKalorii, float _smiertelnyDeficytWody) {
-        super(_zapotrzebowanie, _glod, _pozycja, _wiek, _wiekSmierci, _smiertelnyDeficytKalorii, _smiertelnyDeficytWody);
+    public Kurczak(float _zapotrzebowanie, float _glod, float _pragnienie, Point _pozycja, long _wiek, long _wiekSmierci, float _smiertelnyDeficytKalorii, float _smiertelnyDeficytWody) {
+        super(_zapotrzebowanie, _glod, _pragnienie, _pozycja, _wiek, _wiekSmierci, _smiertelnyDeficytKalorii, _smiertelnyDeficytWody);
+    }
+
+    @Override
+    public ACTIONS decyduj() {
+        if (chce == ACTIONS.NIC) chce = switch (GlobalRandom.rand.nextInt(7)) {
+            case 0 -> ACTIONS.BIEGAJ;
+            case 1 -> ACTIONS.JEDZ;
+            case 2 -> ACTIONS.PIJ;
+            default -> ACTIONS.NIC;
+        };
+        if (chce == null) chce = ACTIONS.NIC;
+        return chce;
     }
 }

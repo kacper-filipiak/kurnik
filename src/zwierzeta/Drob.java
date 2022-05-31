@@ -10,8 +10,8 @@ public abstract class Drob extends Zwierze {
     float smiertelnyDeficytKalorii;
     float smiertelnyDeficytWody;
 
-    public Drob(float _zapotrzebowanie, float _glod, Point _pozycja, long _wiek, long _wiekSmierci, float _smiertelnyDeficytKalorii, float _smiertelnyDeficytWody) {
-        super(_zapotrzebowanie, _glod, _pozycja);
+    public Drob(float _zapotrzebowanie, float _glod, float _pragnieie, Point _pozycja, long _wiek, long _wiekSmierci, float _smiertelnyDeficytKalorii, float _smiertelnyDeficytWody) {
+        super(_zapotrzebowanie, _glod, _pragnieie, _pozycja);
         wiek = _wiek;
         wiekSmierci = _wiekSmierci;
         smiertelnyDeficytKalorii = _smiertelnyDeficytKalorii;
