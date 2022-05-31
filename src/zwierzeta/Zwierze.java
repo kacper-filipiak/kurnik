@@ -24,6 +24,11 @@ public abstract class Zwierze {
         pozycja = _pozycja;
     }
 
+    public void dispose(){
+        thread.interrupt();
+        lock.unlock();
+    }
+
     public void jedz(float kalorie) {
         glod -= kalorie;
         chce = ACTIONS.NIC;

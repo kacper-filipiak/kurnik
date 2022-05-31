@@ -2,20 +2,19 @@ import inne.EventBus;
 import inne.EventSubscriber;
 import inne.GlobalRandom;
 import urzadzenia.*;
-import zwierzeta.Kura;
+import zwierzeta.*;
 
 import java.awt.*;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
 import java.util.LinkedList;
-import java.util.List;
 
 public class Kurnik extends Frame implements EventBus {
 
     final private int fieldsX;
     final private int fieldsY;
 
-    private final LinkedList<Kura> zwierzeta = new LinkedList<>();
+    private final LinkedList<Zwierze> zwierzeta = new LinkedList<>();
 
     private LinkedList<Urzadzenie> urzadzenia = new LinkedList<>();
 
@@ -34,7 +33,7 @@ public class Kurnik extends Frame implements EventBus {
 
         urzadzenia.add(new Poidlo(new Point(1, 4), 4, 4.f, 4.f));
         urzadzenia.add(new Pasnik(new Point(16, 18), 4, 10.f, new Pasza()));
-        urzadzenia.add(new Gniazdo(new Point(24, 5), 3 ));
+        urzadzenia.add(new Gniazdo(new Point(24, 5), 3));
 
         setVisible(true);
         addWindowListener(new WindowAdapter() {
@@ -52,86 +51,99 @@ public class Kurnik extends Frame implements EventBus {
         new Kurnik();
     }
 
-    void loop() {
-//        try {
-        while (getWindows().length > 0) {
-//                Thread.sleep(1000);
-            for (Kura kura : zwierzeta) {
-                Point destination = new Point();
-                switch (kura.decyduj()) {
-                    case PIJ:
-                        Poidlo poidlo = null;
-                        for (Urzadzenie urzadzenie :
-                                urzadzenia) {
-                            if (urzadzenie instanceof Poidlo) {
-                                destination = urzadzenie.pozycja;
-                                poidlo = (Poidlo) urzadzenie;
-                            }
-                        }
-                        if (destination.x == kura.pozycja.x && destination.y == kura.pozycja.y) {
-                            assert poidlo != null;
-                            kura.pij(poidlo.wydajWode());
-                        } else if (destination.x >= 0 && destination.x < fieldsX && destination.y >= 0 && destination.y < fieldsY)
-                            kura.poruszajSie(destination);
-                        break;
-                    case JEDZ:
-                        Pasnik pasnik = null;
-                        for (Urzadzenie urzadzenie :
-                                urzadzenia) {
-                            if (urzadzenie instanceof Pasnik) {
-                                destination = urzadzenie.pozycja;
-                                pasnik = (Pasnik) urzadzenie;
-                            }
-                        }
-                        if (destination.x == kura.pozycja.x && destination.y == kura.pozycja.y) {
-                            assert pasnik != null;
-                            Pasza pasza = pasnik.wydajPasze();
-                            kura.jedz(pasza.getEnergie());
-                        } else if (destination.x >= 0 && destination.x < fieldsX && destination.y >= 0 && destination.y < fieldsY)
-                            kura.poruszajSie(destination);
-                        break;
-                    case WYSIADUJ_JAJO:
-                        Gniazdo gniazdo = null;
-                        for (Urzadzenie urzadzenie :
-                                urzadzenia) {
-                            if (urzadzenie instanceof Gniazdo) {
-                                destination = urzadzenie.pozycja;
-                                gniazdo = (Gniazdo) urzadzenie;
-                            }
-                        }
-                        if (destination.x == kura.pozycja.x && destination.y == kura.pozycja.y) {
-                            assert gniazdo != null;
-                            gniazdo.dodajJajo(kura.zlozJajko());
-                        } else if (destination.x >= 0 && destination.x < fieldsX && destination.y >= 0 && destination.y < fieldsY)
-                            kura.poruszajSie(destination);
-                        break;
-                    case ZABIJ_SIE:
-                        zwierzeta.remove(kura);
-                        break;
-                    case BIEGAJ:
-                        destination = new Point(GlobalRandom.rand.nextInt(fieldsX), GlobalRandom.rand.nextInt(fieldsY));
-                        if (destination.x >= 0 && destination.x < fieldsX && destination.y >= 0 && destination.y < fieldsY)
-                            kura.poruszajSie(destination);
-                        kura.chce = null;
-                        break;
-                    default:
-                        System.out.println("No action");
-                        break;
-                }
+    void ruchDrobiu(Drob drob) {
+        switch (drob.decyduj()) {
+            case PIJ -> pij(drob);
+            case JEDZ -> jedz(drob);
+            case WYSIADUJ_JAJO -> wysiadujJajko((Kura) drob);
+            case ZABIJ_SIE -> zabij(drob);
+            case BIEGAJ -> biegaj(drob);
+            default -> System.out.println("No action");
+        }
+    }
+
+    void pij(Zwierze zwierze) {
+        Point destination = new Point();
+        Poidlo poidlo = null;
+        for (Urzadzenie urzadzenie :
+                urzadzenia) {
+            if (urzadzenie instanceof Poidlo) {
+                destination = urzadzenie.pozycja;
+                poidlo = (Poidlo) urzadzenie;
             }
-//                zwierzeta.removeIf(k -> (k.starzej() == ACTIONS.ZABIJ_SIE));
+        }
+        if (destination.x == zwierze.pozycja.x && destination.y == zwierze.pozycja.y) {
+            assert poidlo != null;
+            zwierze.pij(poidlo.wydajWode());
+        } else if (destination.x >= 0 && destination.x < fieldsX && destination.y >= 0 && destination.y < fieldsY)
+            zwierze.poruszajSie(destination);
+    }
+
+    void jedz(Zwierze zwierze) {
+        Point destination = new Point();
+        Pasnik pasnik = null;
+        for (Urzadzenie urzadzenie :
+                urzadzenia) {
+            if (urzadzenie instanceof Pasnik) {
+                destination = urzadzenie.pozycja;
+                pasnik = (Pasnik) urzadzenie;
+            }
+        }
+        if (destination.x == zwierze.pozycja.x && destination.y == zwierze.pozycja.y) {
+            assert pasnik != null;
+            Pasza pasza = pasnik.wydajPasze();
+            zwierze.jedz(pasza.getEnergie());
+        } else if (destination.x >= 0 && destination.x < fieldsX && destination.y >= 0 && destination.y < fieldsY)
+            zwierze.poruszajSie(destination);
+    }
+
+    void wysiadujJajko(Kura kura) {
+        Point destination = new Point();
+        Gniazdo gniazdo = null;
+        for (Urzadzenie urzadzenie :
+                urzadzenia) {
+            if (urzadzenie instanceof Gniazdo) {
+                destination = urzadzenie.pozycja;
+                gniazdo = (Gniazdo) urzadzenie;
+            }
+        }
+        if (destination.x == kura.pozycja.x && destination.y == kura.pozycja.y) {
+            assert gniazdo != null;
+            gniazdo.dodajJajo(kura.zlozJajko());
+        } else if (destination.x >= 0 && destination.x < fieldsX && destination.y >= 0 && destination.y < fieldsY)
+            kura.poruszajSie(destination);
+    }
+
+    void zabij(Zwierze zwierze) {
+        zwierze.dispose();
+        zwierzeta.remove(zwierze);
+    }
+
+    void biegaj(Zwierze kura) {
+        Point destination = new Point(GlobalRandom.rand.nextInt(fieldsX), GlobalRandom.rand.nextInt(fieldsY));
+        if (destination.x >= 0 && destination.x < fieldsX && destination.y >= 0 && destination.y < fieldsY)
+            kura.poruszajSie(destination);
+        kura.chce = null;
+    }
+
+    void loop() {
+        while (getWindows().length > 0) {
+            for (Zwierze zwierze : zwierzeta) {
+                if (zwierze instanceof Drob) ruchDrobiu((Drob) zwierze);
+            }
             this.repaint();
             System.out.println(".");
         }
-//        } catch (InterruptedException e) {
-//
-//        }
     }
 
     public void paint(Graphics g) {
         drawGrid(g);
-        for (Kura kura : zwierzeta) {
-            drawObject(g, kura.pozycja, Color.YELLOW, "kura");
+        for (Zwierze zwierze : zwierzeta) {
+            if(zwierze instanceof Kura) drawObject(g, zwierze.pozycja, Color.YELLOW, "kura");
+            if(zwierze instanceof Kogut) drawObject(g, zwierze.pozycja, Color.YELLOW, "kogut");
+            if(zwierze instanceof Kurczak) drawObject(g, zwierze.pozycja, Color.YELLOW, "kurczak");
+            if(zwierze instanceof Lis) drawObject(g, zwierze.pozycja, Color.ORANGE, "lis");
+
         }
         for (Urzadzenie urzadzenie :
                 urzadzenia) {
