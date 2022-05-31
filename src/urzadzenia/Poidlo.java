@@ -11,12 +11,6 @@ public class Poidlo extends Urzadzenie {
         pojemnosc = _pojemnosc;
         zawartosc = _zawartosc;
     }
-    float wydajWode(){
-        //TODO: not implemented yet
-    }
-    Poidlo(float _pojemnosc){
-        //TODO: not implemented yet
-    }
 
     @Override
     public boolean zajmijStanowisko() {

@@ -1,26 +1,38 @@
-int iloscZbieranychJajek;
-        Point pozycja;
+package zwierzeta;
 
-public Gospodarz(int _iloscZbieranychJajek, Point _pozycja) {
-public Gospodarz(int _iloscZbieranychJajek, point _pozycja) {
+import urzadzenia.Pasnik;
+import urzadzenia.Pasza;
+
+import java.awt.*;
+
+class Gospodarz {
+    int iloscZbieranychJajek;
+    Point pozycja;
+
+    public Gospodarz(int _iloscZbieranychJajek, Point _pozycja) {
         iloscZbieranychJajek = _iloscZbieranychJajek;
         pozycja = _pozycja;
-        }
-        Pasza dokupPasze(){
+    }
+
+    Pasza dokupPasze() {
         //TODO: not implemented yet
-        }
-        void uzupelnijPasze(Pasnik, Pasza){
+        return null;
+    }
+
+    void uzupelnijPasze(Pasnik pasnik, Pasza pasza) {
         //TODO: not implemented yet
-        }
-        void uzupelnijWode(){
+    }
+
+    void uzupelnijWode() {
         //TODO: not implemented yet
-        }
-        void zbierzJajka(){
+    }
+
+    void zbierzJajka() {
         //TODO: not implemented yet
-        }
-        poruszajSie(int x, int y){
+    }
+
+    void poruszajSie(Point pozycja) {
         //TODO: not implemented yet
-        }
-        Gospodarz(int zbieraneJajka, point _pozycja){
-        //TODO: not implemented yet
-        }
+    }
+
+}

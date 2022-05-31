@@ -1,5 +1,7 @@
 package urzadzenia;
 
+import java.awt.*;
+
 public class Pasza {
     float kalorycznosc;
     float masa;
@@ -8,11 +10,16 @@ public class Pasza {
         kalorycznosc = _kalorycznosc;
         masa = _masa;
     }
-    point podziel(float podzial){
+    Point podziel(float podzial){
+        //TODO: not implemented yet
+        return null;
+    }
+    public Pasza(Pasza pasza1, Pasza pasza2){
         //TODO: not implemented yet
     }
-    Pasza(Pasza pasza1, Pasza pasza2){
-        //TODO: not implemented yet
+
+    public Pasza(){
+
     }
 
     public float getEnergie(){

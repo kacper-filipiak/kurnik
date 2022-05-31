@@ -20,8 +20,16 @@ public abstract class Drob extends Zwierze {
 
     public ACTIONS starzej() {
         wiek += 100;
+        glod += 10.F;
+        pragnienie += 10.F;
         if (wiekSmierci < wiek)
             return ACTIONS.ZABIJ_SIE;
+        else return ACTIONS.NIC;
+    }
+
+    @Override
+    public ACTIONS decyduj() {
+        if (glod > smiertelnyDeficytKalorii || pragnienie > smiertelnyDeficytWody || wiek > wiekSmierci) return ACTIONS.ZABIJ_SIE;
         else return ACTIONS.NIC;
     }
 }

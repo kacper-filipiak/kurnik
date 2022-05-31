@@ -20,10 +20,4 @@ public class Jajko {
             return ACTIONS.ZNISZCZ_JAJKO;
         } else return null;
     }
-    kurczak zaktualizujWysiadywanie(long czas){
-        //TODO: not implemented yet
-    }
-    Jajko(boolean _zaplodnione, long czasWykluwania){
-        //TODO: not implemented yet
-    }
 }

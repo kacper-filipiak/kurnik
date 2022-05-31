@@ -64,8 +64,15 @@ public class Kurnik extends Frame implements EventBus {
             case ZABIJ_SIE -> zabij(drob);
             case BIEGAJ -> biegaj(drob);
             case ZAPLODNIJ_KURE -> zaplodniKure((Kogut) drob);
+            case DOROSNIJ_KURCZAKA -> dorosniKurczaka((Kurczak) drob);
             default -> System.out.println("No action");
         }
+    }
+
+    void dorosniKurczaka(Kurczak kurczak){
+        Drob drob = GlobalRandom.rand.nextInt(2) == 0? new Kura(kurczak): new Kogut(kurczak);
+        zwierzeta.add(drob);
+        zwierzeta.remove(kurczak);
     }
 
     void zaplodniKure(Kogut kogut) {
@@ -187,7 +194,7 @@ public class Kurnik extends Frame implements EventBus {
             System.out.println(".");
             if(zwierzeta.size() > fieldsX*fieldsY) break;
             try {
-                Thread.sleep(100);
+                Thread.sleep(500);
             } catch (InterruptedException e) {
                 throw new RuntimeException(e);
             }

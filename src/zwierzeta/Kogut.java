@@ -10,6 +10,10 @@ public class Kogut extends Drob {
         super(_zapotrzebowanie, _glod, _pragnienie, _pozycja, _wiek, _wiekSmierci, _smiertelnyDeficytKalorii, _smiertelnyDeficytWody);
     }
 
+    public Kogut(Kurczak kurczak) {
+        super(kurczak.zapotrzebowanieEnergetyczne, kurczak.glod, kurczak.pragnienie, kurczak.pozycja, kurczak.wiek, kurczak.wiekSmierci, kurczak.smiertelnyDeficytKalorii, kurczak.smiertelnyDeficytWody);
+    }
+
     public void zaplodnijKure(Kura kura) {
         kura.setZaplodniona(true);
     }
@@ -20,7 +24,7 @@ public class Kogut extends Drob {
             case 0 -> ACTIONS.BIEGAJ;
             case 1 -> ACTIONS.JEDZ;
             case 2 -> ACTIONS.PIJ;
-            case 3,4,5 -> ACTIONS.ZAPLODNIJ_KURE;
+            case 3, 4, 5 -> ACTIONS.ZAPLODNIJ_KURE;
             default -> ACTIONS.NIC;
         };
         if (chce == null) chce = ACTIONS.NIC;
