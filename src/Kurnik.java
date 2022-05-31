@@ -133,6 +133,11 @@ public class Kurnik extends Frame implements EventBus {
             }
             this.repaint();
             System.out.println(".");
+            try {
+                Thread.sleep(10);
+            } catch (InterruptedException e) {
+                throw new RuntimeException(e);
+            }
         }
     }
 
