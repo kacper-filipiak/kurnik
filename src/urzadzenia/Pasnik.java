@@ -11,6 +11,12 @@ public class Pasnik extends Urzadzenie {
         pojemnosc = _pojemnosc;
         zawartosc = _zawartosc;
     }
+    Pasza wydajPasze(){
+        //TODO: not implemented yet
+    }
+    Pasnik(float _pojemnosc){
+        //TODO: not implemented yet
+    }
 
     public Pasza wydajPasze(){
         zawartosc.masa -= 100.f;
