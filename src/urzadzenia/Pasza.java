@@ -19,7 +19,8 @@ public class Pasza {
     }
 
     public Pasza(){
-
+        kalorycznosc = 50.f;
+        masa = 10.f;
     }
 
     public float getEnergie(){

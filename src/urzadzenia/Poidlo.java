@@ -18,6 +18,6 @@ public class Poidlo extends Urzadzenie {
     }
 
     public float wydajWode(){
-        return 0.1f;
+        return 20.f;
     }
 }

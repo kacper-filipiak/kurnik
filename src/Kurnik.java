@@ -8,9 +8,7 @@ import zwierzeta.*;
 import java.awt.*;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
-import java.util.ArrayList;
-import java.util.Iterator;
-import java.util.LinkedList;
+import java.util.*;
 
 public class Kurnik extends Frame implements EventBus {
 
@@ -67,27 +65,20 @@ public class Kurnik extends Frame implements EventBus {
             case DOROSNIJ_KURCZAKA -> dorosniKurczaka((Kurczak) drob);
             default -> System.out.println("No action");
         }
+        drob.starzej();
     }
 
-    void dorosniKurczaka(Kurczak kurczak){
-        Drob drob = GlobalRandom.rand.nextInt(2) == 0? new Kura(kurczak): new Kogut(kurczak);
+    void dorosniKurczaka(Kurczak kurczak) {
+        Drob drob = GlobalRandom.rand.nextInt(2) == 0 ? new Kura(kurczak) : new Kogut(kurczak);
         zwierzeta.add(drob);
         zwierzeta.remove(kurczak);
     }
 
     void zaplodniKure(Kogut kogut) {
         Point destination = new Point();
-        Kura kura = null;
-        for (Zwierze zwierze :
-                zwierzeta) {
-            if (zwierze instanceof Kura) {
-                destination = zwierze.pozycja;
-                kura = (Kura) zwierze;
-            }
-        }
+        Optional<Zwierze> kura = zwierzeta.stream().filter(zwierze -> zwierze instanceof Kura).skip(1).findFirst();
         if (destination.x == kogut.pozycja.x && destination.y == kogut.pozycja.y) {
-            assert kura != null;
-            kogut.zaplodnijKure(kura);
+            kura.ifPresent(zwierze -> kogut.zaplodnijKure((Kura) zwierze));
         } else if (destination.x >= 0 && destination.x < fieldsX && destination.y >= 0 && destination.y < fieldsY)
             kogut.poruszajSie(destination);
     }
@@ -140,15 +131,15 @@ public class Kurnik extends Frame implements EventBus {
         if (destination.x == kura.pozycja.x && destination.y == kura.pozycja.y) {
             assert gniazdo != null;
             Jajko jajko = gniazdo.zwrocWolneJajko();
-            if( jajko != null) {
-                ACTIONS action =kura.wysiadujJajko(jajko);
+            if (jajko != null) {
+                ACTIONS action = kura.wysiadujJajko(jajko);
                 if (action == ACTIONS.WYKLUJ_KURCZAKA) {
-                    zwierzeta.add(new Kurczak(100.f, 0.f, 0.f, new Point(5, 5), 100, 5000, 1000.f, 200.f));
+                    zwierzeta.add(new Kurczak(new Point(gniazdo.pozycja)));
                     gniazdo.usunJajko(jajko);
                 } else if (action == ACTIONS.ZNISZCZ_JAJKO) {
                     gniazdo.usunJajko(jajko);
                 }
-            }else{
+            } else {
                 kura.chce = ACTIONS.NIC;
             }
         } else if (destination.x >= 0 && destination.x < fieldsX && destination.y >= 0 && destination.y < fieldsY)
@@ -173,7 +164,7 @@ public class Kurnik extends Frame implements EventBus {
     }
 
     void zabij(Zwierze zwierze) {
-        zwierze.dispose();
+//        zwierze.dispose();
         zwierzeta.remove(zwierze);
     }
 
@@ -186,15 +177,15 @@ public class Kurnik extends Frame implements EventBus {
 
     void loop() {
         while (getWindows().length > 0) {
-            for(int i = 0; i < zwierzeta.size(); i++){
+            for (int i = 0; i < zwierzeta.size(); i++) {
                 Zwierze zwierze = zwierzeta.get(i);
                 if (zwierze instanceof Drob) ruchDrobiu((Drob) zwierze);
             }
             this.repaint();
             System.out.println(".");
-            if(zwierzeta.size() > fieldsX*fieldsY) break;
+            if (zwierzeta.size() > fieldsX * fieldsY) break;
             try {
-                Thread.sleep(500);
+                Thread.sleep(100);
             } catch (InterruptedException e) {
                 throw new RuntimeException(e);
             }
@@ -203,13 +194,32 @@ public class Kurnik extends Frame implements EventBus {
 
     public void paint(Graphics g) {
         drawGrid(g);
-        for (Zwierze zwierze : zwierzeta) {
-            if (zwierze instanceof Kura) drawObject(g, zwierze.pozycja, Color.YELLOW, "kura");
-            if (zwierze instanceof Kogut) drawObject(g, zwierze.pozycja, Color.YELLOW, "kogut");
-            if (zwierze instanceof Kurczak) drawObject(g, zwierze.pozycja, Color.YELLOW, "kurczak");
-            if (zwierze instanceof Lis) drawObject(g, zwierze.pozycja, Color.ORANGE, "lis");
+        Integer liczbaKur = 0;
+        Integer liczbaKogutow = 0;
+        Integer liczbaKurczakow = 0;
+        Integer liczbaLisow = 0;
+        for (int i = 0; i < zwierzeta.size(); i++) {
+            Zwierze zwierze = zwierzeta.get(i);
+            if (zwierze instanceof Kura) {
+                drawObject(g, zwierze.pozycja, Color.YELLOW, "kura");
+                liczbaKur++;
+            }
+            if (zwierze instanceof Kogut) {
+                drawObject(g, zwierze.pozycja, Color.YELLOW, "kogut");
+                liczbaKogutow++;
+            }
+            if (zwierze instanceof Kurczak) {
+                drawObject(g, zwierze.pozycja, Color.YELLOW, "kurczak");
+                liczbaKurczakow++;
+            }
+            if (zwierze instanceof Lis) {
+                drawObject(g, zwierze.pozycja, Color.ORANGE, "lis");
+                liczbaLisow++;
+            }
 
         }
+        ArrayList<String> summaryList = new ArrayList<>(Arrays.asList(liczbaKur.toString(), liczbaKogutow.toString(), liczbaKurczakow.toString(), liczbaLisow.toString()));
+        drawSummary(g, summaryList);
         for (Urzadzenie urzadzenie :
                 urzadzenia) {
             if (urzadzenie instanceof Poidlo) drawObject(g, urzadzenie.pozycja, Color.BLUE, "Poidełko");
@@ -251,6 +261,17 @@ public class Kurnik extends Frame implements EventBus {
         g2d.setColor(Color.BLACK);
         g2d.setFont(new Font("Microsoft YaHei", Font.PLAIN, scaleSmaller(50)));
         g2d.drawString(text, point.x * rectWidth, (point.y + 1) * rectHeight);
+    }
+
+    private void drawSummary(Graphics g, ArrayList<String> list) {
+        Graphics2D g2d = (Graphics2D) g;
+        int rectWidth = getWidth() / fieldsX;
+        int rectHeight = getHeight() / fieldsY;
+        g2d.setColor(Color.BLACK);
+        g2d.setFont(new Font("Microsoft YaHei", Font.PLAIN, scaleSmaller(50)));
+        for (int i = 0; i < list.size(); i++) {
+            g2d.drawString(list.get(i), (fieldsX - 6) * rectWidth, (fieldsY - list.size() + i) * rectHeight);
+        }
     }
 
     @Override
