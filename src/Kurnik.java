@@ -8,7 +8,13 @@ import zwierzeta.*;
 import java.awt.*;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
+import java.io.BufferedWriter;
+import java.io.FileWriter;
+import java.io.IOException;
+import java.time.Clock;
 import java.util.*;
+
+import static inne.Logger.log;
 
 public class Kurnik extends Frame implements EventBus {
 
@@ -25,16 +31,27 @@ public class Kurnik extends Frame implements EventBus {
         setSize(400, 300);
         fieldsX = 40;
         fieldsY = 20;
-        zwierzeta.add(new Kura(100.f, 0.f, 0.f, new Point(5, 5), 100, 1000, 1000.f, 200.f));
-        zwierzeta.add(new Kura(100.f, 0.f, 0.f, new Point(5, 5), 100, 10000, 1000.f, 200.f));
-        zwierzeta.add(new Kura(100.f, 0.f, 0.f, new Point(5, 5), 100, 50, 1000.f, 200.f));
-        zwierzeta.add(new Kura(100.f, 0.f, 0.f, new Point(5, 5), 100, 2000, 1000.f, 200.f));
-        zwierzeta.add(new Kura(100.f, 0.f, 0.f, new Point(5, 5), 100, 10000, 1000.f, 200.f));
-        zwierzeta.add(new Kura(100.f, 0.f, 0.f, new Point(5, 5), 100, 5000, 1000.f, 200.f));
-        zwierzeta.add(new Kogut(100.f, 0.f, 0.f, new Point(5, 5), 100, 5000, 1000.f, 200.f));
+        Drob.setWiekSmierci(1000);
+        Drob.setSmiertelnyDeficytKalorii(200.f);
+        Drob.setSmiertelnyDeficytWody(300.f);
+        Kura.setZapotrzebowanieWody(5.f);
+        Kura.setZapotrzebowanieKalorii(10.f);
+        Kogut.setZapotrzebowanieKalorii(10.f);
+        Kogut.setZapotrzebowanieWody(5.f);
+        Kurczak.setZapotrzebowanieKalorii(10.f);
+        Kurczak.setZapotrzebowanieWody(5.f);
+        Pasza.setKalorycznosc(10.f);
+        log("START", "////////////////// " + Clock.systemUTC().toString() + " /////////////////////");
+        zwierzeta.add(new Kura(0.f, 0.f, new Point(5, 5), 100));
+        zwierzeta.add(new Kura(0.f, 0.f, new Point(5, 5), 100));
+        zwierzeta.add(new Kura(0.f, 0.f, new Point(5, 5), 100));
+        zwierzeta.add(new Kura(0.f, 0.f, new Point(5, 5), 100));
+        zwierzeta.add(new Kura(0.f, 0.f, new Point(5, 5), 100));
+        zwierzeta.add(new Kura(0.f, 0.f, new Point(5, 5), 100));
+        zwierzeta.add(new Kogut(0.f, 0.f, new Point(5, 5), 100));
 
         urzadzenia.add(new Poidlo(new Point(1, 4), 4, 4.f, 4.f));
-        urzadzenia.add(new Pasnik(new Point(16, 18), 4, 10.f, new Pasza()));
+        urzadzenia.add(new Pasnik(new Point(16, 18), 4, 10.f, new Pasza(50.f)));
         urzadzenia.add(new Gniazdo(new Point(24, 5), 3));
 
         setVisible(true);
@@ -68,19 +85,29 @@ public class Kurnik extends Frame implements EventBus {
         drob.starzej();
     }
 
+
+
     void dorosniKurczaka(Kurczak kurczak) {
         Drob drob = GlobalRandom.rand.nextInt(2) == 0 ? new Kura(kurczak) : new Kogut(kurczak);
         zwierzeta.add(drob);
         zwierzeta.remove(kurczak);
+        log("DOROSNIJ_KURCZAKA", kurczak + " -> " + drob);
     }
 
     void zaplodniKure(Kogut kogut) {
         Point destination = new Point();
         Optional<Zwierze> kura = zwierzeta.stream().filter(zwierze -> zwierze instanceof Kura).skip(1).findFirst();
-        if (destination.x == kogut.pozycja.x && destination.y == kogut.pozycja.y) {
-            kura.ifPresent(zwierze -> kogut.zaplodnijKure((Kura) zwierze));
-        } else if (destination.x >= 0 && destination.x < fieldsX && destination.y >= 0 && destination.y < fieldsY)
-            kogut.poruszajSie(destination);
+        kura.ifPresentOrElse((zwierze) ->
+                {
+                    if (destination.x == kogut.pozycja.x && destination.y == kogut.pozycja.y) {
+                        kogut.zaplodnijKure((Kura) zwierze);
+                        log("ZAPLODNIJ_KURE", kogut + " -> " + kura);
+                    } else if (destination.x >= 0 && destination.x < fieldsX && destination.y >= 0 && destination.y < fieldsY)
+                        kogut.poruszajSie(destination);
+                },
+                () ->
+                        kogut.chce = ACTIONS.NIC
+        );
     }
 
     void pij(Zwierze zwierze) {
@@ -96,6 +123,7 @@ public class Kurnik extends Frame implements EventBus {
         if (destination.x == zwierze.pozycja.x && destination.y == zwierze.pozycja.y) {
             assert poidlo != null;
             zwierze.pij(poidlo.wydajWode());
+            log("PIJ", zwierze.toString());
         } else if (destination.x >= 0 && destination.x < fieldsX && destination.y >= 0 && destination.y < fieldsY)
             zwierze.poruszajSie(destination);
     }
@@ -114,6 +142,7 @@ public class Kurnik extends Frame implements EventBus {
             assert pasnik != null;
             Pasza pasza = pasnik.wydajPasze();
             zwierze.jedz(pasza.getEnergie());
+            log("JEDZ", zwierze.toString());
         } else if (destination.x >= 0 && destination.x < fieldsX && destination.y >= 0 && destination.y < fieldsY)
             zwierze.poruszajSie(destination);
     }
@@ -133,11 +162,14 @@ public class Kurnik extends Frame implements EventBus {
             Jajko jajko = gniazdo.zwrocWolneJajko();
             if (jajko != null) {
                 ACTIONS action = kura.wysiadujJajko(jajko);
+                log("WYSIADUJ_JAJKO", kura + " -> " + jajko);
                 if (action == ACTIONS.WYKLUJ_KURCZAKA) {
                     zwierzeta.add(new Kurczak(new Point(gniazdo.pozycja)));
                     gniazdo.usunJajko(jajko);
+                    log("WYKLUJ_KURCZAKA", jajko.toString());
                 } else if (action == ACTIONS.ZNISZCZ_JAJKO) {
                     gniazdo.usunJajko(jajko);
+                    log("ZNISZCZ_JAJKO", jajko.toString());
                 }
             } else {
                 kura.chce = ACTIONS.NIC;
@@ -159,6 +191,7 @@ public class Kurnik extends Frame implements EventBus {
         if (destination.x == kura.pozycja.x && destination.y == kura.pozycja.y) {
             assert gniazdo != null;
             gniazdo.dodajJajo(kura.zlozJajko());
+            log("ZLOZ_JAJKO", kura.toString());
         } else if (destination.x >= 0 && destination.x < fieldsX && destination.y >= 0 && destination.y < fieldsY)
             kura.poruszajSie(destination);
     }
@@ -166,6 +199,7 @@ public class Kurnik extends Frame implements EventBus {
     void zabij(Zwierze zwierze) {
 //        zwierze.dispose();
         zwierzeta.remove(zwierze);
+        log("ZABIJ", zwierze.toString());
     }
 
     void biegaj(Zwierze kura) {
@@ -176,7 +210,7 @@ public class Kurnik extends Frame implements EventBus {
     }
 
     void loop() {
-        while (getWindows().length > 0) {
+        while (getWindows().length > 0 && zwierzeta.size() > 0) {
             for (int i = 0; i < zwierzeta.size(); i++) {
                 Zwierze zwierze = zwierzeta.get(i);
                 if (zwierze instanceof Drob) ruchDrobiu((Drob) zwierze);

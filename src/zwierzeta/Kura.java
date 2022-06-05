@@ -6,21 +6,28 @@ import inne.GlobalRandom;
 import org.jetbrains.annotations.NotNull;
 
 import java.awt.*;
-import java.util.Random;
 
 public class Kura extends Drob {
     private boolean zaplodniona = false;
+    private static float zapotrzebowanieKalorii;
+    public static void setZapotrzebowanieKalorii(float zapotrzebowanie){
+        Kura.zapotrzebowanieKalorii = zapotrzebowanie;
+    }
+    private static float zapotrzebowanieWody;
+    public static void setZapotrzebowanieWody(float zapotrzebowanie){
+        Kura.zapotrzebowanieWody = zapotrzebowanie;
+    }
 
     public void setZaplodniona(boolean zaplodniona) {
         this.zaplodniona = zaplodniona;
     }
 
-    public Kura(float _zapotrzebowanie, float _glod, float _pragnienie, Point _pozycja, long _wiek, long _wiekSmierci, float _smiertelnyDeficytKalorii, float _smiertelnyDeficytWody) {
-        super(_zapotrzebowanie, _glod, _pragnienie, _pozycja, _wiek, _wiekSmierci, _smiertelnyDeficytKalorii, _smiertelnyDeficytWody);
+    public Kura(float _glod, float _pragnienie, Point _pozycja, long _wiek) {
+        super(zapotrzebowanieKalorii, zapotrzebowanieWody, _glod, _pragnienie, _pozycja, _wiek);
     }
 
     public Kura(Kurczak kurczak) {
-        super(kurczak.zapotrzebowanieEnergetyczne, kurczak.glod, kurczak.pragnienie, kurczak.pozycja, kurczak.wiek, kurczak.wiekSmierci, kurczak.smiertelnyDeficytKalorii, kurczak.smiertelnyDeficytWody);
+        super(zapotrzebowanieKalorii, zapotrzebowanieWody, kurczak.glod, kurczak.pragnienie, kurczak.pozycja, kurczak.wiek);
     }
 
     public Jajko zlozJajko() {
@@ -38,7 +45,7 @@ public class Kura extends Drob {
     @NotNull
     @Override
     public ACTIONS decyduj() {
-        chce = super.decyduj();
+        if(super.decyduj() == ACTIONS.ZABIJ_SIE) return ACTIONS.ZABIJ_SIE;
         if (chce == ACTIONS.NIC) chce = switch (GlobalRandom.rand.nextInt(7)) {
             case 0 -> ACTIONS.BIEGAJ;
             case 1 -> ACTIONS.JEDZ;

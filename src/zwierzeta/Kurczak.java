@@ -7,15 +7,24 @@ import java.awt.*;
 
 public class Kurczak extends Drob {
     long wiekDojrzewania = 300;
-    public Kurczak(float _zapotrzebowanie, float _glod, float _pragnienie, Point _pozycja, long _wiek, long _wiekSmierci, float _smiertelnyDeficytKalorii, float _smiertelnyDeficytWody) {
-        super(_zapotrzebowanie, _glod, _pragnienie, _pozycja, _wiek, _wiekSmierci, _smiertelnyDeficytKalorii, _smiertelnyDeficytWody);
+    private static float zapotrzebowanieKalorii;
+    public static void setZapotrzebowanieKalorii(float zapotrzebowanie){
+        Kurczak.zapotrzebowanieKalorii = zapotrzebowanie;
+    }
+    private static float zapotrzebowanieWody;
+    public static void setZapotrzebowanieWody(float zapotrzebowanie){
+        Kurczak.zapotrzebowanieWody = zapotrzebowanie;
+    }
+    public Kurczak(float _glod, float _pragnienie, Point _pozycja, long _wiek) {
+        super(zapotrzebowanieKalorii, zapotrzebowanieWody, _glod, _pragnienie, _pozycja, _wiek);
     }
 
     public Kurczak(Point _pozycja){
-        super(100.f, 0, 0, _pozycja, 0, 1000+GlobalRandom.rand.nextInt(1000), 1000, 200);
+        super(zapotrzebowanieKalorii, zapotrzebowanieWody, 0, 0, _pozycja, 0);
     }
     @Override
     public ACTIONS decyduj() {
+        if(super.decyduj() == ACTIONS.ZABIJ_SIE) return ACTIONS.ZABIJ_SIE;
         if (chce == ACTIONS.NIC) chce = switch (GlobalRandom.rand.nextInt(7)) {
             case 0 -> ACTIONS.BIEGAJ;
             case 1 -> ACTIONS.JEDZ;

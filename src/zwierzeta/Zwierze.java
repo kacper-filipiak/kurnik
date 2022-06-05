@@ -13,12 +13,15 @@ public abstract class Zwierze {
     public ACTIONS chce = ACTIONS.NIC;
     public Point pozycja;
     float zapotrzebowanieEnergetyczne;
+    float zapotrzebowanieWody;
+
     float glod;
 
     float pragnienie;
 
-    public Zwierze(float _zapotrzebowanie, float _glod, float _pragnienie, Point _pozycja) {
-        zapotrzebowanieEnergetyczne = _zapotrzebowanie;
+    public Zwierze(float _zapotrzebowanieKalorii, float _zapotrzebowanieWody, float _glod, float _pragnienie, Point _pozycja) {
+        zapotrzebowanieEnergetyczne = _zapotrzebowanieKalorii;
+        zapotrzebowanieWody = _zapotrzebowanieWody;
         glod = _glod;
         pragnienie = _pragnienie;
         pozycja = _pozycja;

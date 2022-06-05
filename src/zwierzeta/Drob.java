@@ -4,33 +4,57 @@ import inne.ACTIONS;
 
 import java.awt.*;
 
+import static inne.Logger.log;
+
 public abstract class Drob extends Zwierze {
     long wiek;
-    long wiekSmierci;
-    float smiertelnyDeficytKalorii;
-    float smiertelnyDeficytWody;
+    private static long wiekSmierci;
 
-    public Drob(float _zapotrzebowanie, float _glod, float _pragnieie, Point _pozycja, long _wiek, long _wiekSmierci, float _smiertelnyDeficytKalorii, float _smiertelnyDeficytWody) {
-        super(_zapotrzebowanie, _glod, _pragnieie, _pozycja);
+    public static void setWiekSmierci(long wiekSmierci) {
+        Drob.wiekSmierci = wiekSmierci;
+    }
+
+    private static float smiertelnyDeficytKalorii;
+
+    public static void setSmiertelnyDeficytKalorii(float smiertelnyDeficytKalorii) {
+        Drob.smiertelnyDeficytKalorii = smiertelnyDeficytKalorii;
+    }
+
+    private static float smiertelnyDeficytWody;
+
+    public static void setSmiertelnyDeficytWody(float smiertelnyDeficytWody) {
+        Drob.smiertelnyDeficytWody = smiertelnyDeficytWody;
+    }
+
+    public Drob(float _zapotrzebowanieKalorii, float _zapotrzebowanieWody, float _glod, float _pragnieie, Point _pozycja, long _wiek) {
+        super(_zapotrzebowanieKalorii, _zapotrzebowanieWody, _glod, _pragnieie, _pozycja);
         wiek = _wiek;
-        wiekSmierci = _wiekSmierci;
-        smiertelnyDeficytKalorii = _smiertelnyDeficytKalorii;
-        smiertelnyDeficytWody = _smiertelnyDeficytWody;
     }
 
     public ACTIONS starzej() {
         wiek += 5;
         glod += 10.F;
         pragnienie += 5.F;
-        if (wiekSmierci < wiek)
+        if (wiekSmierci < wiek) {
+            System.out.println("Death of age");
             return ACTIONS.ZABIJ_SIE;
-        else return ACTIONS.NIC;
+        } else return ACTIONS.NIC;
     }
 
     @Override
     public ACTIONS decyduj() {
-        if (glod > smiertelnyDeficytKalorii || pragnienie > smiertelnyDeficytWody || wiek > wiekSmierci) return ACTIONS.ZABIJ_SIE;
-        else return ACTIONS.NIC;
+        if (glod > smiertelnyDeficytKalorii) {
+            log("SMIERC_POWOD", "GLOD");
+            return ACTIONS.ZABIJ_SIE;
+        }
+        if (pragnienie > smiertelnyDeficytWody) {
+            log("SMIERC_POWOD", "PRAGNIENIE");
+            return ACTIONS.ZABIJ_SIE;
+        }
+        if (wiek > wiekSmierci) {
+            log("SMIERC_POWOD", "WIEK");
+            return ACTIONS.ZABIJ_SIE;
+        } else return ACTIONS.NIC;
     }
 }
 

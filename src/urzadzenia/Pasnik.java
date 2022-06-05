@@ -13,7 +13,7 @@ public class Pasnik extends Urzadzenie {
     }
 
     public Pasza wydajPasze(){
-        zawartosc.masa -= 100.f;
+//        zawartosc.masa -= 100.f;
         return zawartosc;
     }
 
