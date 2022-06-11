@@ -35,14 +35,6 @@ public abstract class Drob extends Zwierze {
         wiek += 5;
         glod += 10.F;
         pragnienie += 5.F;
-        if (wiekSmierci < wiek) {
-            System.out.println("Death of age");
-            return ACTIONS.ZABIJ_SIE;
-        } else return ACTIONS.NIC;
-    }
-
-    @Override
-    public ACTIONS decyduj() {
         if (glod > smiertelnyDeficytKalorii) {
             log("SMIERC_POWOD", "GLOD");
             return ACTIONS.ZABIJ_SIE;

@@ -31,15 +31,15 @@ public class Kurnik extends Frame implements EventBus {
         setSize(400, 300);
         fieldsX = 40;
         fieldsY = 20;
-        Drob.setWiekSmierci(1000);
-        Drob.setSmiertelnyDeficytKalorii(200.f);
-        Drob.setSmiertelnyDeficytWody(300.f);
-        Kura.setZapotrzebowanieWody(5.f);
-        Kura.setZapotrzebowanieKalorii(10.f);
-        Kogut.setZapotrzebowanieKalorii(10.f);
-        Kogut.setZapotrzebowanieWody(5.f);
-        Kurczak.setZapotrzebowanieKalorii(10.f);
-        Kurczak.setZapotrzebowanieWody(5.f);
+        Drob.setWiekSmierci(1300);
+        Drob.setSmiertelnyDeficytKalorii(1000.f);
+        Drob.setSmiertelnyDeficytWody(500.f);
+        Kura.setZapotrzebowanieWody(1.f);
+        Kura.setZapotrzebowanieKalorii(2.f);
+        Kogut.setZapotrzebowanieKalorii(1.f);
+        Kogut.setZapotrzebowanieWody(2.f);
+        Kurczak.setZapotrzebowanieKalorii(1.f);
+        Kurczak.setZapotrzebowanieWody(1.f);
         Pasza.setKalorycznosc(10.f);
         log("START", "////////////////// " + Clock.systemUTC().toString() + " /////////////////////");
         zwierzeta.add(new Kura(0.f, 0.f, new Point(5, 5), 100));
@@ -50,8 +50,25 @@ public class Kurnik extends Frame implements EventBus {
         zwierzeta.add(new Kura(0.f, 0.f, new Point(5, 5), 100));
         zwierzeta.add(new Kogut(0.f, 0.f, new Point(5, 5), 100));
 
-        urzadzenia.add(new Poidlo(new Point(1, 4), 4, 4.f, 4.f));
-        urzadzenia.add(new Pasnik(new Point(16, 18), 4, 10.f, new Pasza(50.f)));
+        zwierzeta.add(new Kura(0.f, 0.f, new Point(5, 5), 100));
+        zwierzeta.add(new Kura(0.f, 0.f, new Point(5, 5), 100));
+        zwierzeta.add(new Kura(0.f, 0.f, new Point(5, 5), 100));
+        zwierzeta.add(new Kura(0.f, 0.f, new Point(5, 5), 100));
+        zwierzeta.add(new Kura(0.f, 0.f, new Point(5, 5), 100));
+        zwierzeta.add(new Kura(0.f, 0.f, new Point(5, 5), 100));
+        zwierzeta.add(new Kogut(0.f, 0.f, new Point(5, 5), 100));
+
+
+        zwierzeta.add(new Kura(0.f, 0.f, new Point(5, 5), 100));
+        zwierzeta.add(new Kura(0.f, 0.f, new Point(5, 5), 100));
+        zwierzeta.add(new Kura(0.f, 0.f, new Point(5, 5), 100));
+        zwierzeta.add(new Kura(0.f, 0.f, new Point(5, 5), 100));
+        zwierzeta.add(new Kura(0.f, 0.f, new Point(5, 5), 100));
+        zwierzeta.add(new Kura(0.f, 0.f, new Point(5, 5), 100));
+        zwierzeta.add(new Kogut(0.f, 0.f, new Point(5, 5), 100));
+
+        urzadzenia.add(new Poidlo(new Point(1, 4), 4, 4.f, 4.f, 500.f));
+        urzadzenia.add(new Pasnik(new Point(16, 18), 4, 10.f, new Pasza(50.f), 500.f));
         urzadzenia.add(new Gniazdo(new Point(24, 5), 3));
 
         setVisible(true);
@@ -76,15 +93,17 @@ public class Kurnik extends Frame implements EventBus {
             case JEDZ -> jedz(drob);
             case WYSIADUJ_JAJO -> wysiadujJajko((Kura) drob);
             case ZLOZ_JAJKO -> zlozJajko((Kura) drob);
-            case ZABIJ_SIE -> zabij(drob);
             case BIEGAJ -> biegaj(drob);
             case ZAPLODNIJ_KURE -> zaplodniKure((Kogut) drob);
-            case DOROSNIJ_KURCZAKA -> dorosniKurczaka((Kurczak) drob);
             default -> System.out.println("No action");
         }
-        drob.starzej();
+        switch (drob.starzej()) {
+            case ZABIJ_SIE -> zabij(drob);
+            case DOROSNIJ_KURCZAKA -> dorosniKurczaka((Kurczak) drob);
+            default -> {
+            }
+        }
     }
-
 
 
     void dorosniKurczaka(Kurczak kurczak) {
@@ -96,104 +115,98 @@ public class Kurnik extends Frame implements EventBus {
 
     void zaplodniKure(Kogut kogut) {
         Point destination = new Point();
-        Optional<Zwierze> kura = zwierzeta.stream().filter(zwierze -> zwierze instanceof Kura).skip(1).findFirst();
+        Optional<Zwierze> kura = zwierzeta.stream().filter(zwierze -> zwierze instanceof Kura).min(Comparator.comparingDouble(elem -> elem.pozycja.distance(kogut.pozycja)));
         kura.ifPresentOrElse((zwierze) ->
                 {
-                    if (destination.x == kogut.pozycja.x && destination.y == kogut.pozycja.y) {
+                    if (destination.distance(kogut.pozycja) < 0.5) {
                         kogut.zaplodnijKure((Kura) zwierze);
                         log("ZAPLODNIJ_KURE", kogut + " -> " + kura);
                     } else if (destination.x >= 0 && destination.x < fieldsX && destination.y >= 0 && destination.y < fieldsY)
                         kogut.poruszajSie(destination);
+                    else kogut.chce = null;
                 },
                 () ->
-                        kogut.chce = ACTIONS.NIC
+                        kogut.chce = null
         );
     }
 
     void pij(Zwierze zwierze) {
-        Point destination = new Point();
-        Poidlo poidlo = null;
-        for (Urzadzenie urzadzenie :
-                urzadzenia) {
-            if (urzadzenie instanceof Poidlo) {
-                destination = urzadzenie.pozycja;
-                poidlo = (Poidlo) urzadzenie;
-            }
-        }
-        if (destination.x == zwierze.pozycja.x && destination.y == zwierze.pozycja.y) {
-            assert poidlo != null;
-            zwierze.pij(poidlo.wydajWode());
-            log("PIJ", zwierze.toString());
-        } else if (destination.x >= 0 && destination.x < fieldsX && destination.y >= 0 && destination.y < fieldsY)
-            zwierze.poruszajSie(destination);
+        Optional<Urzadzenie> urzadzenie = urzadzenia.stream().filter(_urzadzenie -> _urzadzenie instanceof Poidlo).min(Comparator.comparingDouble(elem -> elem.pozycja.distance(zwierze.pozycja)));
+        urzadzenie.ifPresentOrElse(
+                (item) -> {
+                    Poidlo poidlo = (Poidlo) item;
+                    Point destination = poidlo.pozycja;
+                    if (destination.distance(zwierze.pozycja) < 0.5) {
+                        zwierze.pij(poidlo.wydajWode());
+                        log("PIJ", zwierze.toString());
+                    } else if (destination.x >= 0 && destination.x < fieldsX && destination.y >= 0 && destination.y < fieldsY)
+                        zwierze.poruszajSie(destination);
+                    else zwierze.chce = null;
+                },
+                () -> zwierze.chce = null
+        );
     }
 
     void jedz(Zwierze zwierze) {
-        Point destination = new Point();
-        Pasnik pasnik = null;
-        for (Urzadzenie urzadzenie :
-                urzadzenia) {
-            if (urzadzenie instanceof Pasnik) {
-                destination = urzadzenie.pozycja;
-                pasnik = (Pasnik) urzadzenie;
-            }
-        }
-        if (destination.x == zwierze.pozycja.x && destination.y == zwierze.pozycja.y) {
-            assert pasnik != null;
-            Pasza pasza = pasnik.wydajPasze();
-            zwierze.jedz(pasza.getEnergie());
-            log("JEDZ", zwierze.toString());
-        } else if (destination.x >= 0 && destination.x < fieldsX && destination.y >= 0 && destination.y < fieldsY)
-            zwierze.poruszajSie(destination);
+        Optional<Urzadzenie> urzadzenie = urzadzenia.stream().filter(_urzadzenie -> _urzadzenie instanceof Pasnik).min(Comparator.comparingDouble(elem -> elem.pozycja.distance(zwierze.pozycja)));
+        urzadzenie.ifPresentOrElse(
+                (item) -> {
+                    Pasnik pasnik = (Pasnik) item;
+                    Point destination = pasnik.pozycja;
+                    if (destination.distance(zwierze.pozycja) < 0.5) {
+                        Pasza pasza = pasnik.wydajPasze();
+                        zwierze.jedz(pasza.getEnergie());
+                        log("JEDZ", zwierze.toString());
+                    } else if (destination.x >= 0 && destination.x < fieldsX && destination.y >= 0 && destination.y < fieldsY)
+                        zwierze.poruszajSie(destination);
+                    else zwierze.chce = null;
+                },
+                () -> zwierze.chce = null);
     }
 
     void wysiadujJajko(Kura kura) {
-        Point destination = new Point();
-        Gniazdo gniazdo = null;
-        for (Urzadzenie urzadzenie :
-                urzadzenia) {
-            if (urzadzenie instanceof Gniazdo) {
-                destination = urzadzenie.pozycja;
-                gniazdo = (Gniazdo) urzadzenie;
-            }
-        }
-        if (destination.x == kura.pozycja.x && destination.y == kura.pozycja.y) {
-            assert gniazdo != null;
-            Jajko jajko = gniazdo.zwrocWolneJajko();
-            if (jajko != null) {
-                ACTIONS action = kura.wysiadujJajko(jajko);
-                log("WYSIADUJ_JAJKO", kura + " -> " + jajko);
-                if (action == ACTIONS.WYKLUJ_KURCZAKA) {
-                    zwierzeta.add(new Kurczak(new Point(gniazdo.pozycja)));
-                    gniazdo.usunJajko(jajko);
-                    log("WYKLUJ_KURCZAKA", jajko.toString());
-                } else if (action == ACTIONS.ZNISZCZ_JAJKO) {
-                    gniazdo.usunJajko(jajko);
-                    log("ZNISZCZ_JAJKO", jajko.toString());
-                }
-            } else {
-                kura.chce = ACTIONS.NIC;
-            }
-        } else if (destination.x >= 0 && destination.x < fieldsX && destination.y >= 0 && destination.y < fieldsY)
-            kura.poruszajSie(destination);
+        Optional<Urzadzenie> urzadzenie = urzadzenia.stream().filter(_urzadzenie -> _urzadzenie instanceof Gniazdo).min(Comparator.comparingDouble(elem -> elem.pozycja.distance(kura.pozycja)));
+        urzadzenie.ifPresentOrElse(
+                (item) -> {
+                    Gniazdo gniazdo = (Gniazdo) item;
+                    Point destination = gniazdo.pozycja;
+                    if (destination.distance(kura.pozycja) < 0.5) {
+                        Jajko jajko = gniazdo.zwrocWolneJajko();
+                        if (jajko != null) {
+                            ACTIONS action = kura.wysiadujJajko(jajko);
+                            log("WYSIADUJ_JAJKO", kura + " -> " + jajko);
+                            if (action == ACTIONS.WYKLUJ_KURCZAKA) {
+                                zwierzeta.add(new Kurczak(new Point(gniazdo.pozycja)));
+                                gniazdo.usunJajko(jajko);
+                                log("WYKLUJ_KURCZAKA", jajko.toString());
+                            } else if (action == ACTIONS.ZNISZCZ_JAJKO) {
+                                gniazdo.usunJajko(jajko);
+                                log("ZNISZCZ_JAJKO", jajko.toString());
+                            }
+                        } else {
+                            kura.chce = ACTIONS.NIC;
+                        }
+                    } else if (destination.x >= 0 && destination.x < fieldsX && destination.y >= 0 && destination.y < fieldsY)
+                        kura.poruszajSie(destination);
+                    else kura.chce = null;
+                },
+                () -> kura.chce = null);
     }
 
     void zlozJajko(Kura kura) {
-        Point destination = new Point();
-        Gniazdo gniazdo = null;
-        for (Urzadzenie urzadzenie :
-                urzadzenia) {
-            if (urzadzenie instanceof Gniazdo) {
-                destination = urzadzenie.pozycja;
-                gniazdo = (Gniazdo) urzadzenie;
-            }
-        }
-        if (destination.x == kura.pozycja.x && destination.y == kura.pozycja.y) {
-            assert gniazdo != null;
-            gniazdo.dodajJajo(kura.zlozJajko());
-            log("ZLOZ_JAJKO", kura.toString());
-        } else if (destination.x >= 0 && destination.x < fieldsX && destination.y >= 0 && destination.y < fieldsY)
-            kura.poruszajSie(destination);
+        Optional<Urzadzenie> urzadzenie = urzadzenia.stream().filter(_urzadzenie -> _urzadzenie instanceof Gniazdo).min(Comparator.comparingDouble(elem -> elem.pozycja.distance(kura.pozycja)));
+        urzadzenie.ifPresentOrElse(
+                (item) -> {
+                    Gniazdo gniazdo = (Gniazdo) item;
+                    Point destination = gniazdo.pozycja;
+                    if (destination.distance(kura.pozycja) < 0.5) {
+                        gniazdo.dodajJajo(kura.zlozJajko());
+                        log("ZLOZ_JAJKO", kura.toString());
+                    } else if (destination.x >= 0 && destination.x < fieldsX && destination.y >= 0 && destination.y < fieldsY)
+                        kura.poruszajSie(destination);
+                    else kura.chce = null;
+                },
+                () -> kura.chce = null);
     }
 
     void zabij(Zwierze zwierze) {

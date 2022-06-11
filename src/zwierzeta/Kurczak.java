@@ -24,7 +24,6 @@ public class Kurczak extends Drob {
     }
     @Override
     public ACTIONS decyduj() {
-        if(super.decyduj() == ACTIONS.ZABIJ_SIE) return ACTIONS.ZABIJ_SIE;
         if (chce == ACTIONS.NIC) chce = switch (GlobalRandom.rand.nextInt(7)) {
             case 0 -> ACTIONS.BIEGAJ;
             case 1 -> ACTIONS.JEDZ;

@@ -33,11 +33,13 @@ public abstract class Zwierze {
 
     public void jedz(float kalorie) {
         glod -= kalorie;
+        if(glod < 0) glod = 0;
         chce = ACTIONS.NIC;
     }
 
     public void pij(float litry) {
         pragnienie -= litry;
+        if(pragnienie < 0) pragnienie = 0;
         chce = ACTIONS.NIC;
     }
 
