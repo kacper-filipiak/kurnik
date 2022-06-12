@@ -24,6 +24,8 @@ public class Poidlo extends Urzadzenie {
     }
 
     public float wydajWode(){
+        zawartosc -= zwracanieNaRaz;
+        if(zawartosc < 0) zawartosc = 0;
         return zwracanieNaRaz;
     }
 }

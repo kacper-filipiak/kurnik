@@ -18,7 +18,8 @@ public class Pasnik extends Urzadzenie {
         zawartosc = new Pasza(pasza, zawartosc);
     }
     public Pasza wydajPasze(){
-//        zawartosc.masa -= 100.f;
+        zawartosc.masa -= zwracanieNaRaz;
+        if(zawartosc.masa < 0) zawartosc.masa = 0;
         return zawartosc.masa > zwracanieNaRaz? zawartosc.podziel(zwracanieNaRaz/zawartosc.masa).get(0) : zawartosc;
     }
 

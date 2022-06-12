@@ -8,12 +8,8 @@ import zwierzeta.*;
 import java.awt.*;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
-import java.io.BufferedWriter;
-import java.io.FileWriter;
-import java.io.IOException;
 import java.time.Clock;
 import java.util.*;
-import java.util.List;
 
 import static inne.Logger.log;
 
@@ -319,8 +315,8 @@ public class Kurnik extends Frame implements EventBus {
                 zwierzeta.add(new Lis(new Point(0, 0), 0.2f));
             }
         } else {
-            switch (lis.decyduj()) {
-                case ATAK -> polujNaDrob(lis);
+            if (lis.decyduj() == ACTIONS.ATAK) {
+                polujNaDrob(lis);
             }
         }
     }
@@ -366,10 +362,10 @@ public class Kurnik extends Frame implements EventBus {
 
     public void paint(Graphics g) {
         drawGrid(g);
-        Integer liczbaKur = 0;
-        Integer liczbaKogutow = 0;
-        Integer liczbaKurczakow = 0;
-        Integer liczbaLisow = 0;
+        int liczbaKur = 0;
+        int liczbaKogutow = 0;
+        int liczbaKurczakow = 0;
+        int liczbaLisow = 0;
         for (int i = 0; i < zwierzeta.size(); i++) {
             Zwierze zwierze = zwierzeta.get(i);
             if (zwierze instanceof Kura) {
@@ -393,7 +389,7 @@ public class Kurnik extends Frame implements EventBus {
         for (Gospodarz gospodarz : gospodarze) {
             drawObject(g, gospodarz.pozycja, Color.PINK, "gospodarz");
         }
-        ArrayList<String> summaryList = new ArrayList<>(Arrays.asList(liczbaKur.toString(), liczbaKogutow.toString(), liczbaKurczakow.toString(), liczbaLisow.toString(), "Ilosc Zebranych Jajek: " + Gospodarz.getZebraneJajka()));
+        ArrayList<String> summaryList = new ArrayList<>(Arrays.asList(Integer.toString(liczbaKur), Integer.toString(liczbaKogutow), Integer.toString(liczbaKurczakow), Integer.toString(liczbaLisow), "Ilosc Zebranych Jajek: " + Gospodarz.getZebraneJajka()));
         drawSummary(g, summaryList);
         for (Urzadzenie urzadzenie :
                 urzadzenia) {

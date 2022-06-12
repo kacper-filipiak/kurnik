@@ -30,7 +30,7 @@ public class Gospodarz {
     }
 
     public void uzupelnijPasze(Pasnik pasnik) {
-        pasnik.uzupelnijPasze(new Pasza(10.f));
+        pasnik.uzupelnijPasze(new Pasza(100.f));
     }
 
     public void uzupelnijWode(Poidlo poidlo) {
@@ -38,7 +38,7 @@ public class Gospodarz {
     }
 
     public void zbierzJajka(Gniazdo gniazdo) {
-        for (int i = 0; i < zebraneJajka; i++) {
+        for (int i = 0; i < iloscZbieranychJajek; i++) {
             Jajko jajko = gniazdo.zwrocWolneJajko();
             if (jajko != null) {
                 gniazdo.usunJajko(jajko);
