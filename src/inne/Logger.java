@@ -9,9 +9,11 @@ import java.util.Date;
 
 
 public class Logger {
+    static boolean clear = true;
     static public void log(String TAG, String message) {
         try {
-            BufferedWriter writer = new BufferedWriter(new FileWriter("report.txt", true));
+            BufferedWriter writer = new BufferedWriter(new FileWriter("report.txt", !clear));
+            clear = false;
             writer.append('\n')
                     .append(String.valueOf(System.currentTimeMillis()))
                     .append(" ")

@@ -13,6 +13,7 @@ import java.io.FileWriter;
 import java.io.IOException;
 import java.time.Clock;
 import java.util.*;
+import java.util.List;
 
 import static inne.Logger.log;
 
@@ -92,14 +93,18 @@ public class Kurnik extends Frame implements EventBus {
     }
 
     void ruchDrobiu(Drob drob) {
-        switch (drob.decyduj()) {
-            case PIJ -> pij(drob);
-            case JEDZ -> jedz(drob);
-            case WYSIADUJ_JAJO -> wysiadujJajko((Kura) drob);
-            case ZLOZ_JAJKO -> zlozJajko((Kura) drob);
-            case BIEGAJ -> biegaj(drob);
-            case ZAPLODNIJ_KURE -> zaplodniKure((Kogut) drob);
-            default -> System.out.println("No action");
+        if(uciekacPrzedGospodarzem(drob)){
+            biegaj(drob);
+        }else {
+            switch (drob.decyduj()) {
+                case PIJ -> pij(drob);
+                case JEDZ -> jedz(drob);
+                case WYSIADUJ_JAJO -> wysiadujJajko((Kura) drob);
+                case ZLOZ_JAJKO -> zlozJajko((Kura) drob);
+                case BIEGAJ -> biegaj(drob);
+                case ZAPLODNIJ_KURE -> zaplodniKure((Kogut) drob);
+                default -> System.out.println("No action");
+            }
         }
         switch (drob.starzej()) {
             case ZABIJ_SIE -> zabij(drob);
@@ -219,6 +224,13 @@ public class Kurnik extends Frame implements EventBus {
         log("ZABIJ", zwierze.toString());
     }
 
+    boolean uciekacPrzedGospodarzem(Zwierze zwierze) {
+        for (Gospodarz gospodarz : gospodarze) {
+            if (gospodarz.pozycja.distance(zwierze.pozycja) < 1.5f) return true;
+        }
+        return false;
+    }
+
     void biegaj(Zwierze kura) {
         Point destination = new Point(GlobalRandom.rand.nextInt(fieldsX), GlobalRandom.rand.nextInt(fieldsY));
         if (destination.x >= 0 && destination.x < fieldsX && destination.y >= 0 && destination.y < fieldsY)
@@ -226,12 +238,81 @@ public class Kurnik extends Frame implements EventBus {
         kura.chce = null;
     }
 
-    void ruchGospodarza(){
+    void biegaj(Gospodarz gospodarz) {
+        Point destination = new Point(GlobalRandom.rand.nextInt(fieldsX), GlobalRandom.rand.nextInt(fieldsY));
+        if (destination.x >= 0 && destination.x < fieldsX && destination.y >= 0 && destination.y < fieldsY)
+            gospodarz.poruszajSie(destination);
+        gospodarz.chce = null;
+    }
 
+    void ruchGospodarza(Gospodarz gospodarz) {
+        switch (gospodarz.decyduj()) {
+            case NAPELNIJ_PASNIK -> napelnijPasnik(gospodarz);
+            case NAPELNIJ_POIDLO -> napelnijPoidlo(gospodarz);
+            case ZBIERAJ_JAJKA -> zbierajJajka(gospodarz);
+            case BIEGAJ -> biegaj(gospodarz);
+            default -> {
+            }
+
+        }
+    }
+
+    void napelnijPasnik(Gospodarz gospodarz) {
+        Optional<Urzadzenie> urzadzenie = urzadzenia.stream().filter(_urzadzenie -> _urzadzenie instanceof Pasnik).min(Comparator.comparingDouble(elem -> elem.pozycja.distance(gospodarz.pozycja)));
+        urzadzenie.ifPresentOrElse(
+                (item) -> {
+                    Pasnik pasnik = (Pasnik) item;
+                    Point destination = pasnik.pozycja;
+                    if (destination.distance(gospodarz.pozycja) < 0.5) {
+                        gospodarz.uzupelnijPasze(pasnik);
+                        gospodarz.chce = ACTIONS.NIC;
+                        log("NAPELNIJ_WODE", gospodarz + " -> " + pasnik);
+                    } else if (destination.x >= 0 && destination.x < fieldsX && destination.y >= 0 && destination.y < fieldsY)
+                        gospodarz.poruszajSie(destination);
+                },
+                () -> gospodarz.chce = ACTIONS.NIC
+        );
+    }
+
+    void napelnijPoidlo(Gospodarz gospodarz) {
+        Optional<Urzadzenie> urzadzenie = urzadzenia.stream().filter(_urzadzenie -> _urzadzenie instanceof Poidlo).min(Comparator.comparingDouble(elem -> elem.pozycja.distance(gospodarz.pozycja)));
+        urzadzenie.ifPresentOrElse(
+                (item) -> {
+                    Poidlo poidlo = (Poidlo) item;
+                    Point destination = poidlo.pozycja;
+                    if (destination.distance(gospodarz.pozycja) < 0.5) {
+                        gospodarz.uzupelnijWode(poidlo);
+                        gospodarz.chce = ACTIONS.NIC;
+                        log("NAPELNIJ_PASZE", gospodarz + "->" + poidlo);
+                    } else if (destination.x >= 0 && destination.x < fieldsX && destination.y >= 0 && destination.y < fieldsY)
+                        gospodarz.poruszajSie(destination);
+                },
+                () -> gospodarz.chce = ACTIONS.NIC
+        );
+    }
+
+    void zbierajJajka(Gospodarz gospodarz) {
+        Optional<Urzadzenie> urzadzenie = urzadzenia.stream().filter(_urzadzenie -> _urzadzenie instanceof Gniazdo).min(Comparator.comparingDouble(elem -> elem.pozycja.distance(gospodarz.pozycja)));
+        urzadzenie.ifPresentOrElse(
+                (item) -> {
+                    Gniazdo gniazdo = (Gniazdo) item;
+                    Point destination = gniazdo.pozycja;
+                    if (destination.distance(gospodarz.pozycja) < 0.5) {
+                        gospodarz.zbierzJajka(gniazdo);
+                        gospodarz.chce = ACTIONS.NIC;
+                        log("ZBIERAJ_JAJKA", gospodarz + "->" + gniazdo);
+                    } else if (destination.x >= 0 && destination.x < fieldsX && destination.y >= 0 && destination.y < fieldsY)
+                        gospodarz.poruszajSie(destination);
+                },
+                () -> gospodarz.chce = ACTIONS.NIC
+        );
     }
 
     void loop() {
         while (getWindows().length > 0 && zwierzeta.size() > 0) {
+            for (Gospodarz gospodarz : gospodarze) {
+                ruchGospodarza(gospodarz);
+            }
             for (int i = 0; i < zwierzeta.size(); i++) {
                 Zwierze zwierze = zwierzeta.get(i);
                 if (zwierze instanceof Drob) ruchDrobiu((Drob) zwierze);
@@ -273,10 +354,10 @@ public class Kurnik extends Frame implements EventBus {
             }
 
         }
-        for(Gospodarz gospodarz : gospodarze){
+        for (Gospodarz gospodarz : gospodarze) {
             drawObject(g, gospodarz.pozycja, Color.PINK, "gospodarz");
         }
-        ArrayList<String> summaryList = new ArrayList<>(Arrays.asList(liczbaKur.toString(), liczbaKogutow.toString(), liczbaKurczakow.toString(), liczbaLisow.toString()));
+        ArrayList<String> summaryList = new ArrayList<>(Arrays.asList(liczbaKur.toString(), liczbaKogutow.toString(), liczbaKurczakow.toString(), liczbaLisow.toString(), "Ilosc Zebranych Jajek: " + Gospodarz.getZebraneJajka()));
         drawSummary(g, summaryList);
         for (Urzadzenie urzadzenie :
                 urzadzenia) {
@@ -328,7 +409,7 @@ public class Kurnik extends Frame implements EventBus {
         g2d.setColor(Color.BLACK);
         g2d.setFont(new Font("Microsoft YaHei", Font.PLAIN, scaleSmaller(50)));
         for (int i = 0; i < list.size(); i++) {
-            g2d.drawString(list.get(i), (fieldsX - 6) * rectWidth, (fieldsY - list.size() + i) * rectHeight);
+            g2d.drawString(list.get(i), (fieldsX - 20) * rectWidth, (fieldsY - list.size() + i) * rectHeight);
         }
     }
 

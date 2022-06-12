@@ -7,6 +7,8 @@ public class Jajko {
     long czasWykluwania;
     boolean zaplodnione;
 
+    public boolean uzywane = false;
+
     public Jajko(boolean _zaplodnione, long _czasWykluwania) {
         zaplodnione = _zaplodnione;
         czasWykluwania = _czasWykluwania;

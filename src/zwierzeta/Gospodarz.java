@@ -12,43 +12,50 @@ import java.awt.*;
 import java.util.concurrent.locks.ReentrantLock;
 
 public class Gospodarz {
+    public ACTIONS chce = ACTIONS.NIC;
     int iloscZbieranychJajek;
-    static int zebraneJajka;
+    static int zebraneJajka = 0;
+
+    public static int getZebraneJajka() {
+        return zebraneJajka;
+    }
+
     public Point pozycja;
     ReentrantLock lock = new ReentrantLock();
     Thread thread = new Thread();
+
     public Gospodarz(int _iloscZbieranychJajek, Point _pozycja) {
         iloscZbieranychJajek = _iloscZbieranychJajek;
         pozycja = _pozycja;
     }
 
-    void uzupelnijPasze(Pasnik pasnik) {
+    public void uzupelnijPasze(Pasnik pasnik) {
         pasnik.uzupelnijPasze(new Pasza(10.f));
     }
 
-    void uzupelnijWode(Poidlo poidlo) {
+    public void uzupelnijWode(Poidlo poidlo) {
         poidlo.uzupelnijWode();
     }
 
-    void zbierzJajka(Gniazdo gniazdo) {
-        for(int i = 0; i < zebraneJajka; i++) {
+    public void zbierzJajka(Gniazdo gniazdo) {
+        for (int i = 0; i < zebraneJajka; i++) {
             Jajko jajko = gniazdo.zwrocWolneJajko();
             if (jajko != null) {
                 gniazdo.usunJajko(jajko);
                 zebraneJajka++;
-            }else{
+            } else {
                 break;
             }
         }
     }
 
-    void poruszajSie(Point point) {
+    public void poruszajSie(Point point) {
         if (!thread.isAlive()) {
             thread = new Thread(() -> {
                 lock.lock();
                 while (pozycja.x != point.x || pozycja.y != point.y) {
-                    if(pozycja.x != point.x)pozycja.x += (pozycja.x - point.x) < 0 ? 1 : -1;
-                    if(pozycja.y != point.y)pozycja.y += (pozycja.y - point.y) < 0 ? 1 : -1;
+                    if (pozycja.x != point.x) pozycja.x += (pozycja.x - point.x) < 0 ? 1 : -1;
+                    if (pozycja.y != point.y) pozycja.y += (pozycja.y - point.y) < 0 ? 1 : -1;
                     EventSubscriber.publishEvent();
                     try {
                         Thread.sleep(10);
@@ -62,24 +69,27 @@ public class Gospodarz {
         }
     }
 
-    ACTIONS decyduj(){
-        switch (GlobalRandom.rand.nextInt(3)){
-            case 0 -> {
-                return ACTIONS.NAPELNIJ_POIDLO;
-            }
-            case 1 -> {
-                return ACTIONS.NAPELNIJ_PASNIK;
-            }
-            case 2 -> {
-                return ACTIONS.ZBIERAJ_JAJKA;
-            }
-            case 3 -> {
-                return ACTIONS.BIEGAJ;
-            }
-            default -> {
-                return ACTIONS.NIC;
+    public ACTIONS decyduj() {
+        if (chce == ACTIONS.NIC || chce == null) {
+            switch (GlobalRandom.rand.nextInt(12)) {
+                case 0 -> {
+                    chce = ACTIONS.NAPELNIJ_POIDLO;
+                }
+                case 1 -> {
+                    chce =  ACTIONS.NAPELNIJ_PASNIK;
+                }
+                case 2 -> {
+                    chce =  ACTIONS.ZBIERAJ_JAJKA;
+                }
+                case 3,4,5,6 -> {
+                    chce = ACTIONS.BIEGAJ;
+                }
+                default -> {
+                    chce =  ACTIONS.NIC;
+                }
             }
         }
+        return chce;
     }
 
 }

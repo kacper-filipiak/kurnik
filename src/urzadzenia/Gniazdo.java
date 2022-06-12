@@ -28,6 +28,6 @@ public class Gniazdo extends Urzadzenie {
 
     @Nullable
     public Jajko zwrocWolneJajko(){
-        return jajka.isEmpty()? null : jajka.get(0);
+        return jajka.stream().filter((Jajko elem) -> !elem.uzywane).findFirst().orElse(null);
     }
 }
