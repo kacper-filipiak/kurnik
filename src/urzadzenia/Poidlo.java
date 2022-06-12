@@ -3,19 +3,15 @@ package urzadzenia;
 import java.awt.*;
 
 public class Poidlo extends Urzadzenie {
+    float zwracanieNaRaz;
     float pojemnosc;
     float zawartosc;
 
-    public Poidlo(Point _pozycja, int _liczbaStanowisk, float _pojemnosc, float _zawartosc) {
+    public Poidlo(Point _pozycja, int _liczbaStanowisk, float _pojemnosc, float _zawartosc, float zwracanieNaRaz) {
         super(_pozycja, _liczbaStanowisk);
         pojemnosc = _pojemnosc;
         zawartosc = _zawartosc;
-    }
-    float wydajWode(){
-        //TODO: not implemented yet
-    }
-    Poidlo(float _pojemnosc){
-        //TODO: not implemented yet
+        this.zwracanieNaRaz = zwracanieNaRaz;
     }
 
     @Override
@@ -23,7 +19,13 @@ public class Poidlo extends Urzadzenie {
         return false;
     }
 
+    public void uzupelnijWode(){
+        zawartosc = pojemnosc;
+    }
+
     public float wydajWode(){
-        return 0.1f;
+        zawartosc -= zwracanieNaRaz;
+        if(zawartosc < 0) zawartosc = 0;
+        return zwracanieNaRaz;
     }
 }

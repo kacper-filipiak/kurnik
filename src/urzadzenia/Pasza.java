@@ -1,21 +1,36 @@
 package urzadzenia;
 
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
+
 public class Pasza {
-    float kalorycznosc;
+    static private float kalorycznosc;
+
+    static public void setKalorycznosc(float kalorycznosc) {
+        Pasza.kalorycznosc = kalorycznosc;
+    }
+
     float masa;
 
     public void Pasza(float _kalorycznosc, float _masa) {
         kalorycznosc = _kalorycznosc;
         masa = _masa;
     }
-    point podziel(float podzial){
-        //TODO: not implemented yet
-    }
-    Pasza(Pasza pasza1, Pasza pasza2){
-        //TODO: not implemented yet
+
+    List<Pasza> podziel(float podzial) {
+        return List.of( new Pasza(masa * podzial), new Pasza(masa * (1 - podzial)));
     }
 
-    public float getEnergie(){
+    public Pasza(Pasza pasza1, Pasza pasza2) {
+        masa = pasza1.masa + pasza2.masa;
+    }
+
+    public Pasza(float masa) {
+        this.masa = masa;
+    }
+
+    public float getEnergie() {
         return kalorycznosc * masa;
     }
 }

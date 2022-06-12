@@ -7,6 +7,8 @@ public class Jajko {
     long czasWykluwania;
     boolean zaplodnione;
 
+    public boolean uzywane = false;
+
     public Jajko(boolean _zaplodnione, long _czasWykluwania) {
         zaplodnione = _zaplodnione;
         czasWykluwania = _czasWykluwania;
@@ -19,11 +21,5 @@ public class Jajko {
         else if (czasWykluwania < -10) {
             return ACTIONS.ZNISZCZ_JAJKO;
         } else return null;
-    }
-    kurczak zaktualizujWysiadywanie(long czas){
-        //TODO: not implemented yet
-    }
-    Jajko(boolean _zaplodnione, long czasWykluwania){
-        //TODO: not implemented yet
     }
 }
