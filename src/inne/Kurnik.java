@@ -1,7 +1,6 @@
-import inne.ACTIONS;
-import inne.EventBus;
-import inne.EventSubscriber;
-import inne.GlobalRandom;
+package inne;
+
+import inne.*;
 import urzadzenia.*;
 import zwierzeta.*;
 
@@ -24,8 +23,8 @@ public class Kurnik extends Frame implements EventBus {
 
     private final ArrayList<Gospodarz> gospodarze = new ArrayList<>();
 
-    Kurnik() {
-        super("Java 2D Kurnik");
+    public Kurnik() {
+        super("Java 2D inne.Kurnik");
         EventSubscriber.subscribe(this);
         setSize(400, 300);
         fieldsX = 40;
@@ -83,11 +82,6 @@ public class Kurnik extends Frame implements EventBus {
                           }
         );
         loop();
-    }
-
-    public static void main(String[] args) {
-        System.out.println("Starting");
-        new Kurnik();
     }
 
     void ruchDrobiu(Drob drob) {
