@@ -70,6 +70,8 @@ public class Kurnik extends Frame implements EventBus {
         zwierzeta.add(new Kura(0.f, 0.f, new Point(5, 5), 100));
         zwierzeta.add(new Kogut(0.f, 0.f, new Point(5, 5), 100));
 
+        zwierzeta.add(new Lis(new Point(10, 10), 0.2f));
+
         gospodarze.add(new Gospodarz(5, new Point(1, 1)));
 
         urzadzenia.add(new Poidlo(new Point(1, 4), 4, 4.f, 4.f, 500.f));
@@ -93,9 +95,9 @@ public class Kurnik extends Frame implements EventBus {
     }
 
     void ruchDrobiu(Drob drob) {
-        if(uciekacPrzedGospodarzem(drob)){
+        if (uciekacPrzedGospodarzem(drob)) {
             biegaj(drob);
-        }else {
+        } else {
             switch (drob.decyduj()) {
                 case PIJ -> pij(drob);
                 case JEDZ -> jedz(drob);
@@ -308,6 +310,39 @@ public class Kurnik extends Frame implements EventBus {
         );
     }
 
+    void ruchLisa(Lis lis) {
+        if (uciekacPrzedGospodarzem(lis)) {
+            if (GlobalRandom.rand.nextBoolean()) {
+                biegaj(lis);
+            } else {
+                zabij(lis);
+                zwierzeta.add(new Lis(new Point(0, 0), 0.2f));
+            }
+        } else {
+            switch (lis.decyduj()) {
+                case ATAK -> polujNaDrob(lis);
+            }
+        }
+    }
+
+    void polujNaDrob(Lis lis) {
+        Optional<Zwierze> zwierze = zwierzeta.stream().filter((elem) -> elem instanceof Drob).findFirst();
+        zwierze.ifPresentOrElse(
+                (item) -> {
+                    Drob drob = (Drob) item;
+                    Point destination = drob.pozycja;
+                    if (destination.distance(lis.pozycja) < 0.5) {
+                        zabij(drob);
+                        lis.jedz(5000.f);
+                        lis.chce = ACTIONS.NIC;
+                        log("ATAK_LISA", lis + "->" + drob);
+                    } else if (destination.x >= 0 && destination.x < fieldsX && destination.y >= 0 && destination.y < fieldsY)
+                        lis.poruszajSie(destination);
+                },
+                () -> lis.chce = ACTIONS.NIC
+        );
+    }
+
     void loop() {
         while (getWindows().length > 0 && zwierzeta.size() > 0) {
             for (Gospodarz gospodarz : gospodarze) {
@@ -316,6 +351,7 @@ public class Kurnik extends Frame implements EventBus {
             for (int i = 0; i < zwierzeta.size(); i++) {
                 Zwierze zwierze = zwierzeta.get(i);
                 if (zwierze instanceof Drob) ruchDrobiu((Drob) zwierze);
+                if (zwierze instanceof Lis) ruchLisa((Lis) zwierze);
             }
             this.repaint();
             System.out.println(".");

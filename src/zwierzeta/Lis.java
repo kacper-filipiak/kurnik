@@ -1,19 +1,31 @@
 package zwierzeta;
 
 import inne.ACTIONS;
+import inne.GlobalRandom;
 
 import java.awt.*;
 
 public class Lis extends Zwierze {
     float wspolczynnikSzansAtaku;
 
-    public Lis(float _zapotrzebowanie, float _glod, float _pragnienie, Point _pozycja, float _wspolczynnikSzansAtaku) {
-        super(_zapotrzebowanie, _zapotrzebowanie, _glod, _pragnienie, _pozycja);
+    static float _zapotrzebowanieEnergetyczne = 100.f;
+
+    public static void setZapotrzebowanieEnergetyczne(float zapotrzebowanieEnergetyczne) {
+        Lis._zapotrzebowanieEnergetyczne = zapotrzebowanieEnergetyczne;
+    }
+
+
+    public Lis(Point _pozycja, float _wspolczynnikSzansAtaku) {
+        super(_zapotrzebowanieEnergetyczne,0.f, 0.f, 0.f, _pozycja);
         wspolczynnikSzansAtaku = _wspolczynnikSzansAtaku;
     }
 
     @Override
     public ACTIONS decyduj() {
-        return null;
+        glod += zapotrzebowanieEnergetyczne;
+        if(wspolczynnikSzansAtaku * glod > zapotrzebowanieEnergetyczne * 10){
+            if(GlobalRandom.rand.nextBoolean()) chce = ACTIONS.ATAK;
+        }
+        return chce == null ? ACTIONS.NIC : chce;
     }
 }
