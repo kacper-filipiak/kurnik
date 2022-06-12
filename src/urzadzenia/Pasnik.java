@@ -14,6 +14,9 @@ public class Pasnik extends Urzadzenie {
         this.zwracanieNaRaz = zwracanieNaRaz;
     }
 
+    public void uzupelnijPasze(Pasza pasza){
+        zawartosc = new Pasza(pasza, zawartosc);
+    }
     public Pasza wydajPasze(){
 //        zawartosc.masa -= 100.f;
         return zawartosc.masa > zwracanieNaRaz? zawartosc.podziel(zwracanieNaRaz/zawartosc.masa).get(0) : zawartosc;

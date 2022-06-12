@@ -25,6 +25,8 @@ public class Kurnik extends Frame implements EventBus {
 
     private LinkedList<Urzadzenie> urzadzenia = new LinkedList<>();
 
+    private final ArrayList<Gospodarz> gospodarze = new ArrayList<>();
+
     Kurnik() {
         super("Java 2D Kurnik");
         EventSubscriber.subscribe(this);
@@ -66,6 +68,8 @@ public class Kurnik extends Frame implements EventBus {
         zwierzeta.add(new Kura(0.f, 0.f, new Point(5, 5), 100));
         zwierzeta.add(new Kura(0.f, 0.f, new Point(5, 5), 100));
         zwierzeta.add(new Kogut(0.f, 0.f, new Point(5, 5), 100));
+
+        gospodarze.add(new Gospodarz(5, new Point(1, 1)));
 
         urzadzenia.add(new Poidlo(new Point(1, 4), 4, 4.f, 4.f, 500.f));
         urzadzenia.add(new Pasnik(new Point(16, 18), 4, 10.f, new Pasza(50.f), 500.f));
@@ -222,6 +226,10 @@ public class Kurnik extends Frame implements EventBus {
         kura.chce = null;
     }
 
+    void ruchGospodarza(){
+
+    }
+
     void loop() {
         while (getWindows().length > 0 && zwierzeta.size() > 0) {
             for (int i = 0; i < zwierzeta.size(); i++) {
@@ -264,6 +272,9 @@ public class Kurnik extends Frame implements EventBus {
                 liczbaLisow++;
             }
 
+        }
+        for(Gospodarz gospodarz : gospodarze){
+            drawObject(g, gospodarz.pozycja, Color.PINK, "gospodarz");
         }
         ArrayList<String> summaryList = new ArrayList<>(Arrays.asList(liczbaKur.toString(), liczbaKogutow.toString(), liczbaKurczakow.toString(), liczbaLisow.toString()));
         drawSummary(g, summaryList);
