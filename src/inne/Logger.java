@@ -4,9 +4,7 @@ import java.io.BufferedWriter;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.sql.Timestamp;
-import java.util.ArrayList;
 import java.util.LinkedHashMap;
-import java.util.LinkedList;
 
 
 public class Logger {

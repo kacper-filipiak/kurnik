@@ -1,22 +1,24 @@
 package inne;
 
-import javax.swing.*;
 import java.awt.*;
 import java.util.LinkedHashMap;
 import java.util.concurrent.atomic.AtomicInteger;
 
-public class SummaryPage extends Frame{
+public class SummaryPage extends Frame {
 
     LinkedHashMap<String, String> summaryMap = new LinkedHashMap<>();
-    public void setSummaryMap(LinkedHashMap<String, String> summaryMap){
-        this.summaryMap = summaryMap;
-        repaint();
-    }
+
     SummaryPage() {
         super("Podsumowanie");
         setSize(400, 300);
         setVisible(true);
     }
+
+    public void setSummaryMap(LinkedHashMap<String, String> summaryMap) {
+        this.summaryMap = summaryMap;
+        repaint();
+    }
+
     public void paint(Graphics g) {
         drawSummary(g, summaryMap);
     }
@@ -26,7 +28,7 @@ public class SummaryPage extends Frame{
         g2d.setColor(Color.BLACK);
         g2d.setFont(new Font("Microsoft YaHei", Font.PLAIN, scaleSmaller(50)));
         AtomicInteger i = new AtomicInteger();
-        list.forEach((key, value) -> g2d.drawString(key + " " + value, 0, (i.getAndIncrement()+1) * scaleY(100)));
+        list.forEach((key, value) -> g2d.drawString(key + " " + value, 0, (i.getAndIncrement() + 2) * scaleY(100)));
     }
 
     private int scaleX(int x) {

@@ -8,8 +8,6 @@ import javax.swing.*;
 public class ConfigPage extends JFrame {
 
     static int currentPanel = 0;
-    JPanel panel = new JPanel();
-
     static JTextField drobWiekSmierci = new JTextField(1300 + " ", 40);
     static JTextField drobSmiertelnyDeficytKalorii = new JTextField(1000.f + " ", 40);
     static JTextField drobSmiertelnyDeficytWody = new JTextField(500.f + " ", 40);
@@ -20,14 +18,12 @@ public class ConfigPage extends JFrame {
     static JTextField kurczakZapotrzebowanieKalorii = new JTextField(1.f + " ", 40);
     static JTextField kurczakZapotrzebowanieWody = new JTextField(1.f + " ", 40);
     static JTextField paszaKalorycznosc = new JTextField(10.f + " ", 40);
-
     static JTextField kalorycznoscDrobiu = new JTextField(1000.f + "", 40);
     static JTextField lisWspolczynnikAtaku = new JTextField(0.2f + "", 40);
     static JTextField lisZapotrzebownieKaloryczne = new JTextField(100.f + "", 40);
     static JTextField podstawaCzasu = new JTextField(10 + "", 40);
-    static JTextField maksymalnyCzas = new JTextField(1000000+"", 40);
-
-    static JTextField maksymalnaLiczbaDrobiu = new JTextField(40+"", 40);
+    static JTextField maksymalnyCzas = new JTextField(1000000 + "", 40);
+    static JTextField maksymalnaLiczbaDrobiu = new JTextField(40 + "", 40);
     static JTextField liczbaKur = new JTextField(10 + "", 40);
     static JTextField liczbaKogutow = new JTextField(1 + "", 40);
     static JTextField liczbaLisow = new JTextField(1 + "", 40);
@@ -35,10 +31,76 @@ public class ConfigPage extends JFrame {
     static JTextField liczbaGniazd = new JTextField(1 + "", 40);
     static JTextField liczbaPasnikow = new JTextField(1 + "", 40);
     static JTextField liczbaPoidel = new JTextField(1 + "", 40);
-
+    JPanel panel = new JPanel();
     JButton submitBtn = new JButton("Rozpoczni symulacje");
     JButton nextBtn = new JButton("Nastepne");
     JButton prevBtn = new JButton("Poprzednie");
+
+    public ConfigPage() {
+        super("Konfiguracja kurnika");
+        setSize(500, 1000);
+
+        if (currentPanel == 0) {
+            drawFirstPage();
+        } else if (currentPanel == 1) {
+            drawSecondPage();
+        } else if (currentPanel == 2) {
+            drawThirdPage();
+        }
+
+
+        submitBtn.addActionListener((action) -> {
+            Drob.setWiekSmierci(Long.parseLong(drobWiekSmierci.getText().trim()));
+            Drob.setSmiertelnyDeficytKalorii(Float.parseFloat(drobSmiertelnyDeficytKalorii.getText().trim()));
+            Drob.setSmiertelnyDeficytWody(Float.parseFloat(drobSmiertelnyDeficytWody.getText().trim()));
+            Kura.setZapotrzebowanieWody(Float.parseFloat(kuraZapotrzebowanieWody.getText().trim()));
+            Kura.setZapotrzebowanieKalorii(Float.parseFloat(kuraZapotrzebowanieKalorii.getText().trim()));
+            Kogut.setZapotrzebowanieKalorii(Float.parseFloat(kogutZapotrzebowanieKalorii.getText().trim()));
+            Kogut.setZapotrzebowanieWody(Float.parseFloat(kogutZapotrzebowanieWody.getText().trim()));
+            Kurczak.setZapotrzebowanieKalorii(Float.parseFloat(kuraZapotrzebowanieKalorii.getText().trim()));
+            Kurczak.setZapotrzebowanieWody(Float.parseFloat(kurczakZapotrzebowanieWody.getText().trim()));
+            Pasza.setKalorycznosc(Float.parseFloat(paszaKalorycznosc.getText().trim()));
+            Drob.setKalorycznoscDrobiu(Float.parseFloat(kalorycznoscDrobiu.getText().trim()));
+            Lis.setWspolczynnikSzansAtaku(Float.parseFloat(lisWspolczynnikAtaku.getText().trim()));
+            Lis.setZapotrzebowanieEnergetyczne(Float.parseFloat(lisZapotrzebownieKaloryczne.getText().trim()));
+            Speed.setTimeBase(Long.parseLong(podstawaCzasu.getText().trim()));
+            new Thread(() -> new Kurnik(
+                    Integer.parseInt(maksymalnyCzas.getText().trim()),
+                    Integer.parseInt(maksymalnaLiczbaDrobiu.getText().trim()),
+                    Integer.parseInt(liczbaKur.getText().trim()),
+                    Integer.parseInt(liczbaKogutow.getText().trim()),
+                    Integer.parseInt(liczbaLisow.getText().trim()),
+                    Integer.parseInt(liczbaGospodarzy.getText().trim()),
+                    Integer.parseInt(liczbaPasnikow.getText().trim()),
+                    Integer.parseInt(liczbaPoidel.getText().trim()),
+                    Integer.parseInt(liczbaGniazd.getText().trim())
+            )).start();
+            this.setVisible(false);
+        });
+
+        nextBtn.addActionListener((action) -> {
+            if (currentPanel < 2) {
+                currentPanel++;
+                new Thread(ConfigPage::new).start();
+                setVisible(false);
+            }
+        });
+
+        prevBtn.addActionListener((action) -> {
+            if (currentPanel > 0) {
+                currentPanel--;
+                new Thread(ConfigPage::new).start();
+                setVisible(false);
+            }
+        });
+
+        panel.add(prevBtn);
+        panel.add(nextBtn);
+        panel.add(submitBtn);
+        add(panel);
+
+        setVisible(true);
+    }
 
     public static void main(String[] args) {
         System.out.println("Starting");
@@ -99,74 +161,6 @@ public class ConfigPage extends JFrame {
         panel.add(liczbaPasnikow);
         panel.add(new JLabel("Liczba Poidel"));
         panel.add(liczbaPoidel);
-    }
-
-    public ConfigPage() {
-        super("Konfiguracja kurnika");
-        setSize(500, 1000);
-
-        if (currentPanel == 0) {
-            drawFirstPage();
-        } else if (currentPanel == 1) {
-            drawSecondPage();
-        } else if (currentPanel == 2) {
-            drawThirdPage();
-        }
-
-
-        submitBtn.addActionListener((action) -> {
-            Drob.setWiekSmierci(Long.parseLong(drobWiekSmierci.getText().trim()));
-            Drob.setSmiertelnyDeficytKalorii(Float.parseFloat(drobSmiertelnyDeficytKalorii.getText().trim()));
-            Drob.setSmiertelnyDeficytWody(Float.parseFloat(drobSmiertelnyDeficytWody.getText().trim()));
-            Kura.setZapotrzebowanieWody(Float.parseFloat(kuraZapotrzebowanieWody.getText().trim()));
-            Kura.setZapotrzebowanieKalorii(Float.parseFloat(kuraZapotrzebowanieKalorii.getText().trim()));
-            Kogut.setZapotrzebowanieKalorii(Float.parseFloat(kogutZapotrzebowanieKalorii.getText().trim()));
-            Kogut.setZapotrzebowanieWody(Float.parseFloat(kogutZapotrzebowanieWody.getText().trim()));
-            Kurczak.setZapotrzebowanieKalorii(Float.parseFloat(kuraZapotrzebowanieKalorii.getText().trim()));
-            Kurczak.setZapotrzebowanieWody(Float.parseFloat(kurczakZapotrzebowanieWody.getText().trim()));
-            Pasza.setKalorycznosc(Float.parseFloat(paszaKalorycznosc.getText().trim()));
-            Drob.setKalorycznoscDrobiu(Float.parseFloat(kalorycznoscDrobiu.getText().trim()));
-            Lis.setWspolczynnikSzansAtaku(Float.parseFloat(lisWspolczynnikAtaku.getText().trim()));
-            Lis.setZapotrzebowanieEnergetyczne(Float.parseFloat(lisZapotrzebownieKaloryczne.getText().trim()));
-            Speed.setTimeBase(Long.parseLong(podstawaCzasu.getText().trim()));
-            new Thread(() -> {
-                new Kurnik(
-                        Integer.parseInt(maksymalnyCzas.getText().trim()),
-                        Integer.parseInt(maksymalnaLiczbaDrobiu.getText().trim()),
-                        Integer.parseInt(liczbaKur.getText().trim()),
-                        Integer.parseInt(liczbaKogutow.getText().trim()),
-                        Integer.parseInt(liczbaLisow.getText().trim()),
-                        Integer.parseInt(liczbaGospodarzy.getText().trim()),
-                        Integer.parseInt(liczbaPasnikow.getText().trim()),
-                        Integer.parseInt(liczbaPoidel.getText().trim()),
-                        Integer.parseInt(liczbaGniazd.getText().trim())
-                );
-            }).start();
-            this.setVisible(false);
-        });
-
-        nextBtn.addActionListener((action) -> {
-            if (currentPanel < 2) {
-                currentPanel++;
-                new Thread(ConfigPage::new).start();
-                setVisible(false);
-            }
-        });
-
-        prevBtn.addActionListener((action) -> {
-            if (currentPanel > 0) {
-                currentPanel--;
-                new Thread(ConfigPage::new).start();
-                setVisible(false);
-            }
-        });
-
-        panel.add(prevBtn);
-        panel.add(nextBtn);
-        panel.add(submitBtn);
-        add(panel);
-
-        setVisible(true);
     }
 
 }

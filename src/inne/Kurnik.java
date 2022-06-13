@@ -9,7 +9,6 @@ import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
 import java.sql.Timestamp;
 import java.util.*;
-import java.util.concurrent.atomic.AtomicInteger;
 
 import static inne.Logger.log;
 import static java.lang.Math.min;
@@ -19,18 +18,14 @@ public class Kurnik extends Frame implements EventBus {
 
     final private int fieldsX;
     final private int fieldsY;
-
+    private final ArrayList<Zwierze> zwierzeta = new ArrayList<>();
+    private final ArrayList<Gospodarz> gospodarze = new ArrayList<>();
     SummaryPage summaryPage;
     private boolean koniecCzasu = false;
-
-    private final ArrayList<Zwierze> zwierzeta = new ArrayList<>();
-
     private LinkedList<Urzadzenie> urzadzenia = new LinkedList<>();
 
-    private final ArrayList<Gospodarz> gospodarze = new ArrayList<>();
-
     public Kurnik(long maksymalnyCzasSymulacji, int maksymalnaLiczbaDrobiu, int liczbaKur, int liczbaKogutow, int liczbaGospodarzy, int liczbaLisow, int liczbaPasnikow, int liczbaPoidel, int liczbaGniazd) {
-        super("Java 2D inne.Kurnik");
+        super("Java 2D Kurnik");
         new Thread(() -> summaryPage = new SummaryPage()).start();
         EventSubscriber.subscribe(this);
         setSize(400, 300);
@@ -76,7 +71,7 @@ public class Kurnik extends Frame implements EventBus {
                               }
                           }
         );
-        new Thread(()->{
+        new Thread(() -> {
             try {
                 Thread.sleep(maksymalnyCzasSymulacji);
                 koniecCzasu = true;
@@ -100,7 +95,8 @@ public class Kurnik extends Frame implements EventBus {
                 case ZLOZ_JAJKO -> zlozJajko((Kura) drob);
                 case BIEGAJ -> biegaj(drob);
                 case ZAPLODNIJ_KURE -> zaplodniKure((Kogut) drob);
-                default -> {}
+                default -> {
+                }
             }
         }
         switch (drob.starzej()) {
