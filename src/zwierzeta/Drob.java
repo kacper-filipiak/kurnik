@@ -8,6 +8,17 @@ import static inne.Logger.log;
 
 public abstract class Drob extends Zwierze {
     long wiek;
+
+    private static float kalorycznoscDrobiu = 1000.f;
+
+    public static void setKalorycznoscDrobiu(float kalorycznoscDrobiu) {
+        Drob.kalorycznoscDrobiu = kalorycznoscDrobiu;
+    }
+
+    public static float getKalorycznoscDrobiu() {
+        return kalorycznoscDrobiu;
+    }
+
     private static long wiekSmierci;
 
     public static void setWiekSmierci(long wiekSmierci) {

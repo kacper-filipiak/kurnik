@@ -21,14 +21,17 @@ public class ConfigPage extends JFrame {
     static JTextField kurczakZapotrzebowanieWody = new JTextField(1.f + " ", 40);
     static JTextField paszaKalorycznosc = new JTextField(10.f + " ", 40);
 
+    static JTextField kalorycznoscDrobiu = new JTextField(1000.f + "", 40);
     static JTextField lisWspolczynnikAtaku = new JTextField(0.2f + "", 40);
     static JTextField lisZapotrzebownieKaloryczne = new JTextField(100.f + "", 40);
     static JTextField podstawaCzasu = new JTextField(10 + "", 40);
+    static JTextField maksymalnyCzas = new JTextField(1000000+"", 40);
 
+    static JTextField maksymalnaLiczbaDrobiu = new JTextField(40+"", 40);
     static JTextField liczbaKur = new JTextField(10 + "", 40);
     static JTextField liczbaKogutow = new JTextField(1 + "", 40);
     static JTextField liczbaLisow = new JTextField(1 + "", 40);
-    static JTextField liczbaGospodarzy = new JTextField(10 + "", 40);
+    static JTextField liczbaGospodarzy = new JTextField(1 + "", 40);
     static JTextField liczbaGniazd = new JTextField(1 + "", 40);
     static JTextField liczbaPasnikow = new JTextField(1 + "", 40);
     static JTextField liczbaPoidel = new JTextField(1 + "", 40);
@@ -44,38 +47,44 @@ public class ConfigPage extends JFrame {
 
     void drawFirstPage() {
 
-        panel.add(new JLabel("drob Wiek Smierci"));
+        panel.add(new JLabel("Drob Wiek Smierci"));
         panel.add(drobWiekSmierci);
-        panel.add(new JLabel("drob Smiertelny Deficyt Kalorii"));
+        panel.add(new JLabel("Drob Smiertelny Deficyt Kalorii"));
         panel.add(drobSmiertelnyDeficytKalorii);
-        panel.add(new JLabel("drob Smiertelny Deficyt Wody"));
+        panel.add(new JLabel("Drob Smiertelny Deficyt Wody"));
         panel.add(drobSmiertelnyDeficytWody);
-        panel.add(new JLabel("kura Zapotrzebowanie Wody"));
+        panel.add(new JLabel("Kura Zapotrzebowanie Wody"));
         panel.add(kuraZapotrzebowanieWody);
-        panel.add(new JLabel("kura Zapotrzebowanie Kalorii"));
+        panel.add(new JLabel("Kura Zapotrzebowanie Kalorii"));
         panel.add(kuraZapotrzebowanieKalorii);
-        panel.add(new JLabel("kogut Zapotrzebowanie Kalorii"));
+        panel.add(new JLabel("Kogut Zapotrzebowanie Kalorii"));
         panel.add(kogutZapotrzebowanieKalorii);
-        panel.add(new JLabel("kogut Zapotrzebowanie Wody"));
+        panel.add(new JLabel("Kogut Zapotrzebowanie Wody"));
         panel.add(kogutZapotrzebowanieWody);
-        panel.add(new JLabel("kurczak Zapotrzebowanie Kalorii"));
+        panel.add(new JLabel("Kurczak Zapotrzebowanie Kalorii"));
         panel.add(kurczakZapotrzebowanieKalorii);
-        panel.add(new JLabel("kurczak Zapotrzebowanie Wody"));
+        panel.add(new JLabel("Kurczak Zapotrzebowanie Wody"));
         panel.add(kurczakZapotrzebowanieWody);
     }
 
     void drawSecondPage() {
-        panel.add(new JLabel("pasza Kalorycznosc"));
+        panel.add(new JLabel("Pasza Kalorycznosc"));
         panel.add(paszaKalorycznosc);
-        panel.add(new JLabel("lis Wspolczynnik Ataku"));
+        panel.add(new JLabel("Kalorycznosc Drobiu"));
+        panel.add(kalorycznoscDrobiu);
+        panel.add(new JLabel("Lis Wspolczynnik Ataku"));
         panel.add(lisWspolczynnikAtaku);
-        panel.add(new JLabel("lis Zapotrzebowanie Kaloryczne"));
+        panel.add(new JLabel("Lis Zapotrzebowanie Kaloryczne"));
         panel.add(lisZapotrzebownieKaloryczne);
+        panel.add(new JLabel("Maksymalny czas symulacji"));
+        panel.add(maksymalnyCzas);
         panel.add(new JLabel("Podstawa czasu"));
         panel.add(podstawaCzasu);
     }
 
     void drawThirdPage() {
+        panel.add(new JLabel("Maksymalna liczba drobiu w kurniku"));
+        panel.add(maksymalnaLiczbaDrobiu);
         panel.add(new JLabel("Liczba Kur"));
         panel.add(liczbaKur);
         panel.add(new JLabel("Liczba Kogutow"));
@@ -95,10 +104,6 @@ public class ConfigPage extends JFrame {
     public ConfigPage() {
         super("Konfiguracja kurnika");
         setSize(500, 1000);
-//        panel.setLayout(new FlowLayout());
-//        panel.setBorder(BorderFactory.createEmptyBorder(5, 5, 5, 5));
-//        panel.setPreferredSize(new Dimension(400, 400));
-//        panel.setAutoscrolls(true);
 
         if (currentPanel == 0) {
             drawFirstPage();
@@ -120,11 +125,14 @@ public class ConfigPage extends JFrame {
             Kurczak.setZapotrzebowanieKalorii(Float.parseFloat(kuraZapotrzebowanieKalorii.getText().trim()));
             Kurczak.setZapotrzebowanieWody(Float.parseFloat(kurczakZapotrzebowanieWody.getText().trim()));
             Pasza.setKalorycznosc(Float.parseFloat(paszaKalorycznosc.getText().trim()));
+            Drob.setKalorycznoscDrobiu(Float.parseFloat(kalorycznoscDrobiu.getText().trim()));
             Lis.setWspolczynnikSzansAtaku(Float.parseFloat(lisWspolczynnikAtaku.getText().trim()));
             Lis.setZapotrzebowanieEnergetyczne(Float.parseFloat(lisZapotrzebownieKaloryczne.getText().trim()));
             Speed.setTimeBase(Long.parseLong(podstawaCzasu.getText().trim()));
             new Thread(() -> {
                 new Kurnik(
+                        Integer.parseInt(maksymalnyCzas.getText().trim()),
+                        Integer.parseInt(maksymalnaLiczbaDrobiu.getText().trim()),
                         Integer.parseInt(liczbaKur.getText().trim()),
                         Integer.parseInt(liczbaKogutow.getText().trim()),
                         Integer.parseInt(liczbaLisow.getText().trim()),
@@ -149,8 +157,8 @@ public class ConfigPage extends JFrame {
             if (currentPanel > 0) {
                 currentPanel--;
                 new Thread(ConfigPage::new).start();
+                setVisible(false);
             }
-            EventSubscriber.publishEvent();
         });
 
         panel.add(prevBtn);

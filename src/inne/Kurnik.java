@@ -3,18 +3,25 @@ package inne;
 import urzadzenia.*;
 import zwierzeta.*;
 
+import javax.swing.*;
 import java.awt.*;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
 import java.sql.Timestamp;
 import java.util.*;
+import java.util.concurrent.atomic.AtomicInteger;
 
 import static inne.Logger.log;
+import static java.lang.Math.min;
+import static java.util.Map.entry;
 
 public class Kurnik extends Frame implements EventBus {
 
     final private int fieldsX;
     final private int fieldsY;
+
+    SummaryPage summaryPage;
+    private boolean koniecCzasu = false;
 
     private final ArrayList<Zwierze> zwierzeta = new ArrayList<>();
 
@@ -22,12 +29,21 @@ public class Kurnik extends Frame implements EventBus {
 
     private final ArrayList<Gospodarz> gospodarze = new ArrayList<>();
 
-    public Kurnik(int liczbaKur, int liczbaKogutow, int liczbaGospodarzy, int liczbaLisow, int liczbaPasnikow, int liczbaPoidel, int liczbaGniazd) {
+    public Kurnik(long maksymalnyCzasSymulacji, int maksymalnaLiczbaDrobiu, int liczbaKur, int liczbaKogutow, int liczbaGospodarzy, int liczbaLisow, int liczbaPasnikow, int liczbaPoidel, int liczbaGniazd) {
         super("Java 2D inne.Kurnik");
+        new Thread(() -> summaryPage = new SummaryPage()).start();
         EventSubscriber.subscribe(this);
         setSize(400, 300);
         fieldsX = 40;
         fieldsY = 20;
+        Logger.clearFile("summary");
+        Logger.log(new LinkedHashMap<>(Map.ofEntries(
+                entry("Licaba kur", "Licaba kur"),
+                entry("Liczba kogutow", "Liczba kogutow"),
+                entry("Liczba kurczakow", "Liczba kurczakow"),
+                entry("Liczba lisow", "Liczba lisow"),
+                entry("Liczba gospodarzy", "Liczba gospodarzy"),
+                entry("Liczba zebranych jajek", "Liczba zebranych jajek"))), "summary");
         log("START", "////////////////// " + (new Timestamp(System.currentTimeMillis())) + " /////////////////////");
         for (int i = 0; i < liczbaKur; i++) {
             zwierzeta.add(new Kura(0.f, 0.f, new Point(GlobalRandom.rand.nextInt(fieldsX), GlobalRandom.rand.nextInt(fieldsY)), 100));
@@ -60,7 +76,17 @@ public class Kurnik extends Frame implements EventBus {
                               }
                           }
         );
-        loop();
+        new Thread(()->{
+            try {
+                Thread.sleep(maksymalnyCzasSymulacji);
+                koniecCzasu = true;
+            } catch (InterruptedException e) {
+                throw new RuntimeException(e);
+            }
+        }).start();
+        loop(maksymalnaLiczbaDrobiu);
+        JOptionPane.showMessageDialog(this,
+                "Symulacja zakonczona!");
     }
 
     void ruchDrobiu(Drob drob) {
@@ -74,7 +100,7 @@ public class Kurnik extends Frame implements EventBus {
                 case ZLOZ_JAJKO -> zlozJajko((Kura) drob);
                 case BIEGAJ -> biegaj(drob);
                 case ZAPLODNIJ_KURE -> zaplodniKure((Kogut) drob);
-                default -> System.out.println("No action");
+                default -> {}
             }
         }
         switch (drob.starzej()) {
@@ -302,7 +328,7 @@ public class Kurnik extends Frame implements EventBus {
                     Point destination = drob.pozycja;
                     if (destination.distance(lis.pozycja) < 0.5) {
                         zabij(drob);
-                        lis.jedz(5000.f);
+                        lis.jedz(Drob.getKalorycznoscDrobiu());
                         lis.chce = ACTIONS.NIC;
                         log("ATAK_LISA", lis + "->" + drob);
                     } else if (destination.x >= 0 && destination.x < fieldsX && destination.y >= 0 && destination.y < fieldsY)
@@ -312,8 +338,8 @@ public class Kurnik extends Frame implements EventBus {
         );
     }
 
-    void loop() {
-        while (getWindows().length > 0 && zwierzeta.size() > 0) {
+    void loop(int maksymalnaLiczbaDrobiu) {
+        while (getWindows().length > 0 && !koniecCzasu && zwierzeta.stream().filter((elem) -> elem instanceof Drob).toList().size() > 0 && maksymalnaLiczbaDrobiu > zwierzeta.stream().filter((elem) -> elem instanceof Drob).toList().size()) {
             for (Gospodarz gospodarz : gospodarze) {
                 ruchGospodarza(gospodarz);
             }
@@ -323,10 +349,9 @@ public class Kurnik extends Frame implements EventBus {
                 if (zwierze instanceof Lis) ruchLisa((Lis) zwierze);
             }
             this.repaint();
-            System.out.println(".");
             if (zwierzeta.size() > fieldsX * fieldsY) break;
             try {
-                Thread.sleep(10 * Speed.getTimeBase());
+                Thread.sleep(min(10 * Speed.getTimeBase(), 100));
             } catch (InterruptedException e) {
                 throw new RuntimeException(e);
             }
@@ -339,6 +364,7 @@ public class Kurnik extends Frame implements EventBus {
         int liczbaKogutow = 0;
         int liczbaKurczakow = 0;
         int liczbaLisow = 0;
+        int liczbaGospodarzy = 0;
         for (int i = 0; i < zwierzeta.size(); i++) {
             Zwierze zwierze = zwierzeta.get(i);
             if (zwierze instanceof Kura) {
@@ -361,9 +387,17 @@ public class Kurnik extends Frame implements EventBus {
         }
         for (Gospodarz gospodarz : gospodarze) {
             drawObject(g, gospodarz.pozycja, Color.PINK, "gospodarz");
+            liczbaGospodarzy++;
         }
-        ArrayList<String> summaryList = new ArrayList<>(Arrays.asList(Integer.toString(liczbaKur), Integer.toString(liczbaKogutow), Integer.toString(liczbaKurczakow), Integer.toString(liczbaLisow), "Ilosc Zebranych Jajek: " + Gospodarz.getZebraneJajka()));
-        drawSummary(g, summaryList);
+        LinkedHashMap<String, String> summaryList = new LinkedHashMap<>(Map.ofEntries(
+                entry("Licaba kur", Integer.toString(liczbaKur)),
+                entry("Liczba kogutow", Integer.toString(liczbaKogutow)),
+                entry("Liczba kurczakow", Integer.toString(liczbaKurczakow)),
+                entry("Liczba lisow", Integer.toString(liczbaLisow)),
+                entry("Liczba gospodarzy", Integer.toString(liczbaGospodarzy)),
+                entry("Liczba zebranych jajek", Integer.toString(Gospodarz.getZebraneJajka()))));
+        summaryPage.setSummaryMap(summaryList);
+        Logger.log(summaryList, "summary");
         for (Urzadzenie urzadzenie :
                 urzadzenia) {
             if (urzadzenie instanceof Poidlo) drawObject(g, urzadzenie.pozycja, Color.BLUE, "Poidełko");
@@ -386,37 +420,27 @@ public class Kurnik extends Frame implements EventBus {
 
     private void drawGrid(Graphics g) {
         Graphics2D g2d = (Graphics2D) g;
-        int rectWidth = getWidth() / fieldsX;
-        int rectHeight = getHeight() / fieldsY;
+        int rectWidth = getWidth() / (fieldsX + 1);
+        int rectHeight = getHeight() / (fieldsY + 1);
         for (int x = 0; x < fieldsX; x++) {
             for (int y = 0; y < fieldsY; y++) {
                 g2d.setColor(Color.DARK_GRAY);
-                g2d.drawRect(x * rectWidth, y * rectHeight, rectWidth, rectHeight);
+                g2d.drawRect((x + 1) * rectWidth, (y + 1) * rectHeight, rectWidth, rectHeight);
             }
         }
     }
 
     private void drawObject(Graphics g, Point point, Color color, String text) {
         Graphics2D g2d = (Graphics2D) g;
-        int rectWidth = getWidth() / fieldsX;
-        int rectHeight = getHeight() / fieldsY;
+        int rectWidth = getWidth() / (fieldsX + 1);
+        int rectHeight = getHeight() / (fieldsY + 1);
         g2d.setColor(color);
-        g2d.fillRect(point.x * rectWidth, point.y * rectHeight, rectWidth, rectHeight);
+        g2d.fillRect((point.x + 1) * rectWidth, (point.y + 1) * rectHeight, rectWidth, rectHeight);
         g2d.setColor(Color.BLACK);
         g2d.setFont(new Font("Microsoft YaHei", Font.PLAIN, scaleSmaller(50)));
-        g2d.drawString(text, point.x * rectWidth, (point.y + 1) * rectHeight);
+        g2d.drawString(text, (point.x + 1) * rectWidth, (point.y + 2) * rectHeight);
     }
 
-    private void drawSummary(Graphics g, ArrayList<String> list) {
-        Graphics2D g2d = (Graphics2D) g;
-        int rectWidth = getWidth() / fieldsX;
-        int rectHeight = getHeight() / fieldsY;
-        g2d.setColor(Color.BLACK);
-        g2d.setFont(new Font("Microsoft YaHei", Font.PLAIN, scaleSmaller(50)));
-        for (int i = 0; i < list.size(); i++) {
-            g2d.drawString(list.get(i), (fieldsX - 20) * rectWidth, (fieldsY - list.size() + i) * rectHeight);
-        }
-    }
 
     @Override
     public void onEvent() {
