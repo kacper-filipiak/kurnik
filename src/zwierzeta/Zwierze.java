@@ -6,7 +6,7 @@ import inne.Speed;
 
 import java.awt.*;
 import java.util.concurrent.locks.ReentrantLock;
-
+//Wykonali Kacper Filipiak i Igor Arciszewski 13.06.2022r.
 public abstract class Zwierze {
     ReentrantLock lock = new ReentrantLock();
     Thread thread = new Thread();

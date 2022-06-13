@@ -8,7 +8,7 @@ import urzadzenia.Poidlo;
 
 import java.awt.*;
 import java.util.concurrent.locks.ReentrantLock;
-
+//Wykonali Kacper Filipiak i Igor Arciszewski 13.06.2022r.
 public class Gospodarz {
     public ACTIONS chce = ACTIONS.NIC;
     int iloscZbieranychJajek;

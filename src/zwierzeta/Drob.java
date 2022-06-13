@@ -5,7 +5,7 @@ import inne.ACTIONS;
 import java.awt.*;
 
 import static inne.Logger.log;
-
+//Wykonali Kacper Filipiak i Igor Arciszewski 13.06.2022r.
 public abstract class Drob extends Zwierze {
     long wiek;
 

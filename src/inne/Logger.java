@@ -6,7 +6,7 @@ import java.io.IOException;
 import java.sql.Timestamp;
 import java.util.LinkedHashMap;
 
-
+//Wykonali Kacper Filipiak i Igor Arciszewski 13.06.2022r.
 public class Logger {
     //czy tworzyc nowy plik
     static boolean clear = true;

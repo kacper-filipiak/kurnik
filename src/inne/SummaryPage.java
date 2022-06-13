@@ -3,7 +3,7 @@ package inne;
 import java.awt.*;
 import java.util.LinkedHashMap;
 import java.util.concurrent.atomic.AtomicInteger;
-
+//Wykonali Kacper Filipiak i Igor Arciszewski 13.06.2022r.
 public class SummaryPage extends Frame {
 
     LinkedHashMap<String, String> summaryMap = new LinkedHashMap<>();

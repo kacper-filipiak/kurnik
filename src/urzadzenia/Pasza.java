@@ -1,7 +1,7 @@
 package urzadzenia;
 
 import java.util.List;
-
+//Wykonali Kacper Filipiak i Igor Arciszewski 13.06.2022r.
 public class Pasza {
     static private float kalorycznosc;
 

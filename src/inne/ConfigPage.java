@@ -5,6 +5,7 @@ import zwierzeta.*;
 
 import javax.swing.*;
 
+//Wykonali Kacper Filipiak i Igor Arciszewski 13.06.2022r.
 //Okno z konfiguracja symulacji
 public class ConfigPage extends JFrame {
 

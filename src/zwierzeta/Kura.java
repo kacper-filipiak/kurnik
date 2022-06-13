@@ -7,7 +7,7 @@ import inne.Speed;
 import org.jetbrains.annotations.NotNull;
 
 import java.awt.*;
-
+//Wykonali Kacper Filipiak i Igor Arciszewski 13.06.2022r.
 public class Kura extends Drob {
     private boolean zaplodniona = false;
     private static float zapotrzebowanieKalorii;

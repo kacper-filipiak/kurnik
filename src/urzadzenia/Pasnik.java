@@ -1,7 +1,7 @@
 package urzadzenia;
 
 import java.awt.*;
-
+//Wykonali Kacper Filipiak i Igor Arciszewski 13.06.2022r.
 public class Pasnik extends Urzadzenie {
     float zwracanieNaRaz;
     float pojemnosc;

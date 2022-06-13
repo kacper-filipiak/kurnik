@@ -6,7 +6,7 @@ import zwierzeta.Jajko;
 import java.awt.*;
 import java.util.LinkedList;
 import java.util.List;
-
+//Wykonali Kacper Filipiak i Igor Arciszewski 13.06.2022r.
 public class Gniazdo extends Urzadzenie {
     List<Jajko> jajka = new LinkedList<>();
 

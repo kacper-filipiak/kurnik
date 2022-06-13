@@ -1,5 +1,5 @@
 package inne;
-
+//Wykonali Kacper Filipiak i Igor Arciszewski 13.06.2022r.
 public class Speed {
     static long timeBase = 10;
 

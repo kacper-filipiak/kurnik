@@ -4,7 +4,7 @@ import inne.ACTIONS;
 import inne.GlobalRandom;
 
 import java.awt.*;
-
+//Wykonali Kacper Filipiak i Igor Arciszewski 13.06.2022r.
 public class Kurczak extends Drob {
     long wiekDojrzewania = 300;
     private static float zapotrzebowanieKalorii;

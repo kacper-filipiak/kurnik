@@ -13,7 +13,7 @@ import java.util.*;
 import static inne.Logger.log;
 import static java.lang.Math.min;
 import static java.util.Map.entry;
-
+//Wykonali Kacper Filipiak i Igor Arciszewski 13.06.2022r.
 public class Kurnik extends Frame implements EventBus {
 
     final private int fieldsX;

@@ -4,7 +4,7 @@ import inne.ACTIONS;
 import inne.GlobalRandom;
 
 import java.awt.*;
-
+//Wykonali Kacper Filipiak i Igor Arciszewski 13.06.2022r.
 public class Lis extends Zwierze {
     //Wartosc z zakresu (0-1)
     static float wspolczynnikSzansAtaku = 0.2f;
