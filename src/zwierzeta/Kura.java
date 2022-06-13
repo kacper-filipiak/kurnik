@@ -3,6 +3,7 @@ package zwierzeta;
 
 import inne.ACTIONS;
 import inne.GlobalRandom;
+import inne.Speed;
 import org.jetbrains.annotations.NotNull;
 
 import java.awt.*;
@@ -33,6 +34,7 @@ public class Kura extends Drob {
         super(zapotrzebowanieKalorii, zapotrzebowanieWody, kurczak.glod, kurczak.pragnienie, kurczak.pozycja, kurczak.wiek);
     }
 
+    //Tworzy jajko i je zwraca
     public Jajko zlozJajko() {
         Jajko jajo = new Jajko(zaplodniona, GlobalRandom.rand.nextLong(1000));
         zaplodniona = false;
@@ -40,13 +42,14 @@ public class Kura extends Drob {
         return jajo;
     }
 
+    //uzywa jajka i aktualizuje jego stan
     public ACTIONS wysiadujJajko(Jajko jajo) {
         chce = ACTIONS.NIC;
         thread = new Thread(() -> {
             lock.lock();
             jajo.uzywane = true;
             try {
-                thread.wait(100);
+                thread.wait(Speed.getTimeBase()*10);
             } catch (InterruptedException e) {
                 throw new RuntimeException(e);
             }
@@ -57,6 +60,7 @@ public class Kura extends Drob {
         return jajo.zaktualizujWysiadywanie(100);
     }
 
+    //zwraca nowa akcje dla kury jesli ta nie jest zajeta
     @NotNull
     @Override
     public ACTIONS decyduj() {

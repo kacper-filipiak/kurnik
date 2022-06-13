@@ -30,6 +30,7 @@ public class Kogut extends Drob {
         kura.setZaplodniona(true);
     }
 
+    //losuje nastepna akcje dla koguta jesli nie robi nic innego
     @Override
     public ACTIONS decyduj() {
         if (chce == ACTIONS.NIC) chce = switch (GlobalRandom.rand.nextInt(6)) {

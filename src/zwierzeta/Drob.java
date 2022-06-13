@@ -42,6 +42,7 @@ public abstract class Drob extends Zwierze {
         wiek = _wiek;
     }
 
+    //symuluje starzenie sie drobiu i zwraca Zabij sie jesli warunki smierci spelnione
     public ACTIONS starzej() {
         wiek += 5;
         glod += 10.F;

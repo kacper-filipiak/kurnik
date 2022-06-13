@@ -11,11 +11,7 @@ public class Pasza {
 
     float masa;
 
-    public void Pasza(float _kalorycznosc, float _masa) {
-        kalorycznosc = _kalorycznosc;
-        masa = _masa;
-    }
-
+    //dzieli pasze w stosunku podanym w parametrze (0-1)
     List<Pasza> podziel(float podzial) {
         return List.of(new Pasza(masa * podzial), new Pasza(masa * (1 - podzial)));
     }

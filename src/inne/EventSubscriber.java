@@ -3,6 +3,7 @@ package inne;
 import java.util.LinkedList;
 import java.util.List;
 
+//Wzorzxec obserwatora w celu ulatwienia odswierzania UI
 public class EventSubscriber {
     static List<EventBus> subscribers = new LinkedList<>();
 

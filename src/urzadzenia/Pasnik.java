@@ -14,10 +14,12 @@ public class Pasnik extends Urzadzenie {
         this.zwracanieNaRaz = zwracanieNaRaz;
     }
 
+    //dodaje pasze do zawartosci
     public void uzupelnijPasze(Pasza pasza) {
         zawartosc = new Pasza(pasza, zawartosc);
     }
 
+    //zwraca pasze z swojej zawartosci
     public Pasza wydajPasze() {
         zawartosc.masa -= zwracanieNaRaz;
         if (zawartosc.masa < 0) zawartosc.masa = 0;

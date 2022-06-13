@@ -1,5 +1,6 @@
 package inne;
 
+//Akcje ktore zwracaja zwierzeta i gospodarz
 public enum ACTIONS {
 
     PIJ,

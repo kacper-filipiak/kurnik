@@ -8,8 +8,10 @@ import java.util.LinkedHashMap;
 
 
 public class Logger {
+    //czy tworzyc nowy plik
     static boolean clear = true;
 
+    //zapisanie wiadomosci do pliku z raport.txt
     static public void log(String TAG, String message) {
         try {
             BufferedWriter writer = new BufferedWriter(new FileWriter("report.txt", !clear));
@@ -28,6 +30,7 @@ public class Logger {
         }
     }
 
+    //zapisanie do pliku csv wartosci z mapy
     static public void log(LinkedHashMap<String, String> message, String filename) {
         try {
             BufferedWriter writer = new BufferedWriter(new FileWriter(filename + ".csv", true));
@@ -52,6 +55,7 @@ public class Logger {
         }
     }
 
+    //wyczyszczenie zawartosci pliku w formacie csv o zadanej nazwie
     static public void clearFile(String filename) {
         try {
             BufferedWriter writer = new BufferedWriter(new FileWriter(filename + ".csv", false));

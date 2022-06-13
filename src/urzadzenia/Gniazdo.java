@@ -27,6 +27,7 @@ public class Gniazdo extends Urzadzenie {
         jajka.remove(jajko);
     }
 
+    //Zwraca jajko ktore nie jest uzywane w danym momencie lub jesli nie ma takiego to null
     @Nullable
     public Jajko zwrocWolneJajko() {
         return jajka.stream().filter((Jajko elem) -> !elem.uzywane).findFirst().orElse(null);

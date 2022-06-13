@@ -26,7 +26,6 @@ public class Gospodarz {
         iloscZbieranychJajek = _iloscZbieranychJajek;
         pozycja = _pozycja;
     }
-
     public void uzupelnijPasze(Pasnik pasnik) {
         pasnik.uzupelnijPasze(new Pasza(100.f));
     }
@@ -35,6 +34,7 @@ public class Gospodarz {
         poidlo.uzupelnijWode();
     }
 
+    //Jesli to mozliwe zbiera tyle jajek ile jest w iloscZbieranychJajek
     public void zbierzJajka(Gniazdo gniazdo) {
         for (int i = 0; i < iloscZbieranychJajek; i++) {
             Jajko jajko = gniazdo.zwrocWolneJajko();
@@ -48,6 +48,7 @@ public class Gospodarz {
         }
     }
 
+    //Realizacja ruchu do punktu
     public void poruszajSie(Point point) {
         if (!thread.isAlive()) {
             thread = new Thread(() -> {
@@ -68,24 +69,15 @@ public class Gospodarz {
         }
     }
 
+    //Losuje następny ruch
     public ACTIONS decyduj() {
         if (chce == ACTIONS.NIC || chce == null) {
             switch (GlobalRandom.rand.nextInt(12)) {
-                case 0 -> {
-                    chce = ACTIONS.NAPELNIJ_POIDLO;
-                }
-                case 1 -> {
-                    chce = ACTIONS.NAPELNIJ_PASNIK;
-                }
-                case 2 -> {
-                    chce = ACTIONS.ZBIERAJ_JAJKA;
-                }
-                case 3, 4, 5, 6 -> {
-                    chce = ACTIONS.BIEGAJ;
-                }
-                default -> {
-                    chce = ACTIONS.NIC;
-                }
+                case 0 -> chce = ACTIONS.NAPELNIJ_POIDLO;
+                case 1 -> chce = ACTIONS.NAPELNIJ_PASNIK;
+                case 2 -> chce = ACTIONS.ZBIERAJ_JAJKA;
+                case 3, 4, 5, 6 -> chce = ACTIONS.BIEGAJ;
+                default -> chce = ACTIONS.NIC;
             }
         }
         return chce;

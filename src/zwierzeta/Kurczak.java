@@ -27,6 +27,7 @@ public class Kurczak extends Drob {
         super(zapotrzebowanieKalorii, zapotrzebowanieWody, 0, 0, _pozycja, 0);
     }
 
+    //zwraca nowa akcje jesli nie robi nic w tym momencie
     @Override
     public ACTIONS decyduj() {
         if (chce == ACTIONS.NIC) chce = switch (GlobalRandom.rand.nextInt(7)) {
@@ -39,6 +40,7 @@ public class Kurczak extends Drob {
         return chce;
     }
 
+    //Jesli juz dorosly zwraca akcje dorosniecia
     @Override
     public ACTIONS starzej() {
         super.starzej();

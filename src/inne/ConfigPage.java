@@ -5,8 +5,10 @@ import zwierzeta.*;
 
 import javax.swing.*;
 
+//Okno z konfiguracja symulacji
 public class ConfigPage extends JFrame {
 
+    //indeks panelu ktory teraz wyswietlac
     static int currentPanel = 0;
     static JTextField drobWiekSmierci = new JTextField(1300 + " ", 40);
     static JTextField drobSmiertelnyDeficytKalorii = new JTextField(1000.f + " ", 40);
@@ -21,8 +23,10 @@ public class ConfigPage extends JFrame {
     static JTextField kalorycznoscDrobiu = new JTextField(1000.f + "", 40);
     static JTextField lisWspolczynnikAtaku = new JTextField(0.2f + "", 40);
     static JTextField lisZapotrzebownieKaloryczne = new JTextField(100.f + "", 40);
-    static JTextField podstawaCzasu = new JTextField(10 + "", 40);
+    static JTextField podstawaCzasu = new JTextField(30 + "", 40);
     static JTextField maksymalnyCzas = new JTextField(1000000 + "", 40);
+    static JTextField liczbaPolX = new JTextField(40 + "", 40);
+    static JTextField liczbaPolY = new JTextField(20 + "", 40);
     static JTextField maksymalnaLiczbaDrobiu = new JTextField(40 + "", 40);
     static JTextField liczbaKur = new JTextField(10 + "", 40);
     static JTextField liczbaKogutow = new JTextField(1 + "", 40);
@@ -40,6 +44,7 @@ public class ConfigPage extends JFrame {
         super("Konfiguracja kurnika");
         setSize(500, 1000);
 
+        //WYbur prezentowanych opcji konfiguracyjnych
         if (currentPanel == 0) {
             drawFirstPage();
         } else if (currentPanel == 1) {
@@ -49,6 +54,7 @@ public class ConfigPage extends JFrame {
         }
 
 
+        //Zakonczenie wyboru, oczyszczanie i konwersja danych wejsciowych oraz przekazanie ich dalej do obiektow
         submitBtn.addActionListener((action) -> {
             Drob.setWiekSmierci(Long.parseLong(drobWiekSmierci.getText().trim()));
             Drob.setSmiertelnyDeficytKalorii(Float.parseFloat(drobSmiertelnyDeficytKalorii.getText().trim()));
@@ -64,7 +70,10 @@ public class ConfigPage extends JFrame {
             Lis.setWspolczynnikSzansAtaku(Float.parseFloat(lisWspolczynnikAtaku.getText().trim()));
             Lis.setZapotrzebowanieEnergetyczne(Float.parseFloat(lisZapotrzebownieKaloryczne.getText().trim()));
             Speed.setTimeBase(Long.parseLong(podstawaCzasu.getText().trim()));
+            //wystartowanie symulacji
             new Thread(() -> new Kurnik(
+                    Integer.parseInt(liczbaPolX.getText().trim()),
+                    Integer.parseInt(liczbaPolY.getText().trim()),
                     Integer.parseInt(maksymalnyCzas.getText().trim()),
                     Integer.parseInt(maksymalnaLiczbaDrobiu.getText().trim()),
                     Integer.parseInt(liczbaKur.getText().trim()),
@@ -75,9 +84,11 @@ public class ConfigPage extends JFrame {
                     Integer.parseInt(liczbaPoidel.getText().trim()),
                     Integer.parseInt(liczbaGniazd.getText().trim())
             )).start();
+            //zamkniecie okna
             this.setVisible(false);
         });
 
+        //przycisk do nastepnej striony
         nextBtn.addActionListener((action) -> {
             if (currentPanel < 2) {
                 currentPanel++;
@@ -86,6 +97,7 @@ public class ConfigPage extends JFrame {
             }
         });
 
+        //przycisk do poprzedniej strony
         prevBtn.addActionListener((action) -> {
             if (currentPanel > 0) {
                 currentPanel--;
@@ -142,6 +154,10 @@ public class ConfigPage extends JFrame {
         panel.add(maksymalnyCzas);
         panel.add(new JLabel("Podstawa czasu"));
         panel.add(podstawaCzasu);
+        panel.add(new JLabel("Liczba pol horyzontalnie"));
+        panel.add(liczbaPolX);
+        panel.add(new JLabel("Liczba pol w kierunku vertykalnym"));
+        panel.add(liczbaPolY);
     }
 
     void drawThirdPage() {

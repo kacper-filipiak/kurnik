@@ -14,6 +14,7 @@ public class Jajko {
         czasWykluwania = _czasWykluwania;
     }
 
+    //zmniejsza czas potrzebny do wyklucia i jesli spadnie do 0 to zwraca akcje wyklucia kurczaka
     @Nullable
     public ACTIONS zaktualizujWysiadywanie(long czas) {
         czasWykluwania -= czas;

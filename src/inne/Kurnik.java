@@ -24,13 +24,17 @@ public class Kurnik extends Frame implements EventBus {
     private boolean koniecCzasu = false;
     private LinkedList<Urzadzenie> urzadzenia = new LinkedList<>();
 
-    public Kurnik(long maksymalnyCzasSymulacji, int maksymalnaLiczbaDrobiu, int liczbaKur, int liczbaKogutow, int liczbaGospodarzy, int liczbaLisow, int liczbaPasnikow, int liczbaPoidel, int liczbaGniazd) {
+    public Kurnik(int X, int Y, long maksymalnyCzasSymulacji, int maksymalnaLiczbaDrobiu, int liczbaKur, int liczbaKogutow, int liczbaGospodarzy, int liczbaLisow, int liczbaPasnikow, int liczbaPoidel, int liczbaGniazd) {
         super("Java 2D Kurnik");
+        //pokazanie podsumowania
         new Thread(() -> summaryPage = new SummaryPage()).start();
+        //subskrybowanie listenera w celu wywolywania repaint()
         EventSubscriber.subscribe(this);
+        //specyfikacja rozmiaru i ilosci pol w oknie
         setSize(400, 300);
-        fieldsX = 40;
-        fieldsY = 20;
+        fieldsX = X;
+        fieldsY = Y;
+        //Przygotowanie plikow wynikowych
         Logger.clearFile("summary");
         Logger.log(new LinkedHashMap<>(Map.ofEntries(
                 entry("Licaba kur", "Licaba kur"),
@@ -71,6 +75,7 @@ public class Kurnik extends Frame implements EventBus {
                               }
                           }
         );
+        //Uruchomienie odliczania do konca czasu przeznaczonego na symulacje
         new Thread(() -> {
             try {
                 Thread.sleep(maksymalnyCzasSymulacji);
@@ -79,11 +84,16 @@ public class Kurnik extends Frame implements EventBus {
                 throw new RuntimeException(e);
             }
         }).start();
+
+        //Start petli glownej programu
         loop(maksymalnaLiczbaDrobiu);
+
+        //Pokazanie popupa na koncu symulacji
         JOptionPane.showMessageDialog(this,
                 "Symulacja zakonczona!");
     }
 
+    ////////////////////////////////////////////////Funkcje opowiedzialne za ruch drobiu////////////////////////////////
     void ruchDrobiu(Drob drob) {
         if (uciekacPrzedGospodarzem(drob)) {
             biegaj(drob);
@@ -108,6 +118,7 @@ public class Kurnik extends Frame implements EventBus {
     }
 
 
+    //Zmienia kurczaka na kure lub koguta
     void dorosniKurczaka(Kurczak kurczak) {
         Drob drob = GlobalRandom.rand.nextInt(2) == 0 ? new Kura(kurczak) : new Kogut(kurczak);
         zwierzeta.add(drob);
@@ -115,6 +126,7 @@ public class Kurnik extends Frame implements EventBus {
         log("DOROSNIJ_KURCZAKA", kurczak + " -> " + drob);
     }
 
+    //Znajduje najblizsza kure i gdy dojdzie do niej umozliwia zlozenie jej zaplodnionego jajka w kurniku
     void zaplodniKure(Kogut kogut) {
         Point destination = new Point();
         Optional<Zwierze> kura = zwierzeta.stream().filter(zwierze -> zwierze instanceof Kura).min(Comparator.comparingDouble(elem -> elem.pozycja.distance(kogut.pozycja)));
@@ -132,6 +144,7 @@ public class Kurnik extends Frame implements EventBus {
         );
     }
 
+    //znajduje poidlo i gdy tam dojdze to zminejsza pragnienie
     void pij(Zwierze zwierze) {
         Optional<Urzadzenie> urzadzenie = urzadzenia.stream().filter(_urzadzenie -> _urzadzenie instanceof Poidlo).min(Comparator.comparingDouble(elem -> elem.pozycja.distance(zwierze.pozycja)));
         urzadzenie.ifPresentOrElse(
@@ -149,6 +162,7 @@ public class Kurnik extends Frame implements EventBus {
         );
     }
 
+    //znajduje najblizszy pasnik i zmniejsza glod gdy do niego dojdzie
     void jedz(Zwierze zwierze) {
         Optional<Urzadzenie> urzadzenie = urzadzenia.stream().filter(_urzadzenie -> _urzadzenie instanceof Pasnik).min(Comparator.comparingDouble(elem -> elem.pozycja.distance(zwierze.pozycja)));
         urzadzenie.ifPresentOrElse(
@@ -166,6 +180,7 @@ public class Kurnik extends Frame implements EventBus {
                 () -> zwierze.chce = null);
     }
 
+    //szuka najblizszego gniazda, prosi o zwrocenie wolnego jajka i gdy takie jest wysiaduje je, co moze owocowac w wykluciu kurczaka
     void wysiadujJajko(Kura kura) {
         Optional<Urzadzenie> urzadzenie = urzadzenia.stream().filter(_urzadzenie -> _urzadzenie instanceof Gniazdo).min(Comparator.comparingDouble(elem -> elem.pozycja.distance(kura.pozycja)));
         urzadzenie.ifPresentOrElse(
@@ -195,6 +210,7 @@ public class Kurnik extends Frame implements EventBus {
                 () -> kura.chce = null);
     }
 
+    //szuka najblizszego gniazda i gdy tam dojdzie kura znosi jajko
     void zlozJajko(Kura kura) {
         Optional<Urzadzenie> urzadzenie = urzadzenia.stream().filter(_urzadzenie -> _urzadzenie instanceof Gniazdo).min(Comparator.comparingDouble(elem -> elem.pozycja.distance(kura.pozycja)));
         urzadzenie.ifPresentOrElse(
@@ -211,12 +227,13 @@ public class Kurnik extends Frame implements EventBus {
                 () -> kura.chce = null);
     }
 
+    //zabija zwierze
     void zabij(Zwierze zwierze) {
-//        zwierze.dispose();
         zwierzeta.remove(zwierze);
         log("ZABIJ", zwierze.toString());
     }
 
+    //gdy zwierze w poblizu dwoch pol od gospodarza zwraca prawde
     boolean uciekacPrzedGospodarzem(Zwierze zwierze) {
         for (Gospodarz gospodarz : gospodarze) {
             if (gospodarz.pozycja.distance(zwierze.pozycja) < 1.5f) return true;
@@ -224,6 +241,7 @@ public class Kurnik extends Frame implements EventBus {
         return false;
     }
 
+    //realizuje ruch w losowy punkt na mapie dla zwierzat
     void biegaj(Zwierze kura) {
         Point destination = new Point(GlobalRandom.rand.nextInt(fieldsX), GlobalRandom.rand.nextInt(fieldsY));
         if (destination.x >= 0 && destination.x < fieldsX && destination.y >= 0 && destination.y < fieldsY)
@@ -231,6 +249,8 @@ public class Kurnik extends Frame implements EventBus {
         kura.chce = null;
     }
 
+    //////////////////////////////////////////////////////////////GOSPODARZ/////////////////////////////////////////////////
+    //realizuje ruch w losowy punkt na mapie dla gospodarza
     void biegaj(Gospodarz gospodarz) {
         Point destination = new Point(GlobalRandom.rand.nextInt(fieldsX), GlobalRandom.rand.nextInt(fieldsY));
         if (destination.x >= 0 && destination.x < fieldsX && destination.y >= 0 && destination.y < fieldsY)
@@ -238,6 +258,7 @@ public class Kurnik extends Frame implements EventBus {
         gospodarz.chce = null;
     }
 
+    //Wybur obecnej akcji gospodarza
     void ruchGospodarza(Gospodarz gospodarz) {
         switch (gospodarz.decyduj()) {
             case NAPELNIJ_PASNIK -> napelnijPasnik(gospodarz);
@@ -250,6 +271,7 @@ public class Kurnik extends Frame implements EventBus {
         }
     }
 
+    //szuka najblizszego pasnika, gdy do niego dojdzie napelnia go
     void napelnijPasnik(Gospodarz gospodarz) {
         Optional<Urzadzenie> urzadzenie = urzadzenia.stream().filter(_urzadzenie -> _urzadzenie instanceof Pasnik).min(Comparator.comparingDouble(elem -> elem.pozycja.distance(gospodarz.pozycja)));
         urzadzenie.ifPresentOrElse(
@@ -267,6 +289,7 @@ public class Kurnik extends Frame implements EventBus {
         );
     }
 
+    //szuka najblizszego poidla i napelnia je gdy do niego dojdzie
     void napelnijPoidlo(Gospodarz gospodarz) {
         Optional<Urzadzenie> urzadzenie = urzadzenia.stream().filter(_urzadzenie -> _urzadzenie instanceof Poidlo).min(Comparator.comparingDouble(elem -> elem.pozycja.distance(gospodarz.pozycja)));
         urzadzenie.ifPresentOrElse(
@@ -284,6 +307,7 @@ public class Kurnik extends Frame implements EventBus {
         );
     }
 
+    //szuka najblizszego gniazda i jak do niego dojdzie to zbiera z niego jajka
     void zbierajJajka(Gospodarz gospodarz) {
         Optional<Urzadzenie> urzadzenie = urzadzenia.stream().filter(_urzadzenie -> _urzadzenie instanceof Gniazdo).min(Comparator.comparingDouble(elem -> elem.pozycja.distance(gospodarz.pozycja)));
         urzadzenie.ifPresentOrElse(
@@ -301,21 +325,27 @@ public class Kurnik extends Frame implements EventBus {
         );
     }
 
+    /////////////////////////////////////////////////LIS////////////////////////////////////////////////////////////////////
+    //Wybur akcji lisa
     void ruchLisa(Lis lis) {
         if (uciekacPrzedGospodarzem(lis)) {
+            //Jeśli lis blisko gospodarza to albo ucieka albo zabija go gospodarz
             if (GlobalRandom.rand.nextBoolean()) {
                 biegaj(lis);
             } else {
                 zabij(lis);
-                zwierzeta.add(new Lis(new Point(0, 0), 0.2f));
             }
         } else {
-            if (lis.decyduj() == ACTIONS.ATAK) {
-                polujNaDrob(lis);
+            switch (lis.decyduj()) {
+                case ATAK -> polujNaDrob(lis);
+                case BIEGAJ -> biegaj(lis);
+                default -> {
+                }
             }
         }
     }
 
+    //Szuka najblizszego drobiu i jesli dopadnie drob to go zabija i redukuje swoj glod
     void polujNaDrob(Lis lis) {
         Optional<Zwierze> zwierze = zwierzeta.stream().filter((elem) -> elem instanceof Drob).findFirst();
         zwierze.ifPresentOrElse(
@@ -334,7 +364,10 @@ public class Kurnik extends Frame implements EventBus {
         );
     }
 
+    ////////////////////////////////////////////////////////INNE////////////////////////////////////////////////////////
+    //Glowna petla programu
     void loop(int maksymalnaLiczbaDrobiu) {
+        //sprawdzanie warunkow konca symulacji
         while (getWindows().length > 0 && !koniecCzasu && zwierzeta.stream().filter((elem) -> elem instanceof Drob).toList().size() > 0 && maksymalnaLiczbaDrobiu > zwierzeta.stream().filter((elem) -> elem instanceof Drob).toList().size()) {
             for (Gospodarz gospodarz : gospodarze) {
                 ruchGospodarza(gospodarz);
@@ -345,7 +378,6 @@ public class Kurnik extends Frame implements EventBus {
                 if (zwierze instanceof Lis) ruchLisa((Lis) zwierze);
             }
             this.repaint();
-            if (zwierzeta.size() > fieldsX * fieldsY) break;
             try {
                 Thread.sleep(min(10 * Speed.getTimeBase(), 100));
             } catch (InterruptedException e) {
@@ -354,6 +386,7 @@ public class Kurnik extends Frame implements EventBus {
         }
     }
 
+    //////////////////////////////////////WYSWIETLANIE//////////////////////////////////////////////////////////////////
     public void paint(Graphics g) {
         drawGrid(g);
         int liczbaKur = 0;
@@ -385,6 +418,7 @@ public class Kurnik extends Frame implements EventBus {
             drawObject(g, gospodarz.pozycja, Color.PINK, "gospodarz");
             liczbaGospodarzy++;
         }
+        //Przekazywanie statystyk do podsumowania
         LinkedHashMap<String, String> summaryList = new LinkedHashMap<>(Map.ofEntries(
                 entry("Licaba kur", Integer.toString(liczbaKur)),
                 entry("Liczba kogutow", Integer.toString(liczbaKogutow)),
@@ -393,6 +427,7 @@ public class Kurnik extends Frame implements EventBus {
                 entry("Liczba gospodarzy", Integer.toString(liczbaGospodarzy)),
                 entry("Liczba zebranych jajek", Integer.toString(Gospodarz.getZebraneJajka()))));
         summaryPage.setSummaryMap(summaryList);
+        //Wpisanie statystyk do pliku summary.csv
         Logger.log(summaryList, "summary");
         for (Urzadzenie urzadzenie :
                 urzadzenia) {
@@ -402,18 +437,22 @@ public class Kurnik extends Frame implements EventBus {
         }
     }
 
+    //dynamiczne skanowanie szerokosci
     private int scaleX(int x) {
         return (int) (getWidth() / 1920.f * x);
     }
 
+    //dynamiczne skalowanie wysokosci
     private int scaleY(int y) {
         return (int) (getHeight() / 1080.f * y);
     }
 
+    //wybor mniejszego wymiary tak aby zawsze zmiescic obiekt
     private int scaleSmaller(int val) {
         return getHeight() > getWidth() ? scaleX(val) : scaleY(val);
     }
 
+    //rysuje plansze o wymiarach fieldsX na fieldsY
     private void drawGrid(Graphics g) {
         Graphics2D g2d = (Graphics2D) g;
         int rectWidth = getWidth() / (fieldsX + 1);
@@ -426,6 +465,7 @@ public class Kurnik extends Frame implements EventBus {
         }
     }
 
+    //rysuje obiekt z tekstem w postaci kwadratu w zadanym kolorze
     private void drawObject(Graphics g, Point point, Color color, String text) {
         Graphics2D g2d = (Graphics2D) g;
         int rectWidth = getWidth() / (fieldsX + 1);
@@ -437,7 +477,7 @@ public class Kurnik extends Frame implements EventBus {
         g2d.drawString(text, (point.x + 1) * rectWidth, (point.y + 2) * rectHeight);
     }
 
-
+    //Funkcja implementujaca obserwatora
     @Override
     public void onEvent() {
         this.repaint();

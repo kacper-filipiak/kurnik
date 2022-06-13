@@ -22,6 +22,7 @@ public class Poidlo extends Urzadzenie {
     public void uzupelnijWode() {
         zawartosc = pojemnosc;
     }
+    //Wydaje wode jesli moze
 
     public float wydajWode() {
         zawartosc -= zwracanieNaRaz;
