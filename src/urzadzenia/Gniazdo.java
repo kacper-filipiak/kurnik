@@ -13,21 +13,22 @@ public class Gniazdo extends Urzadzenie {
     public Gniazdo(Point _pozycja, int _liczbaStanowisk) {
         super(_pozycja, _liczbaStanowisk);
     }
+
     @Override
     boolean zajmijStanowisko() {
         return false;
     }
 
-    public void dodajJajo(Jajko jajo){
+    public void dodajJajo(Jajko jajo) {
         jajka.add(jajo);
     }
 
-    public void usunJajko(Jajko jajko){
+    public void usunJajko(Jajko jajko) {
         jajka.remove(jajko);
     }
 
     @Nullable
-    public Jajko zwrocWolneJajko(){
+    public Jajko zwrocWolneJajko() {
         return jajka.stream().filter((Jajko elem) -> !elem.uzywane).findFirst().orElse(null);
     }
 }

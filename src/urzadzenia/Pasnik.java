@@ -14,13 +14,14 @@ public class Pasnik extends Urzadzenie {
         this.zwracanieNaRaz = zwracanieNaRaz;
     }
 
-    public void uzupelnijPasze(Pasza pasza){
+    public void uzupelnijPasze(Pasza pasza) {
         zawartosc = new Pasza(pasza, zawartosc);
     }
-    public Pasza wydajPasze(){
+
+    public Pasza wydajPasze() {
         zawartosc.masa -= zwracanieNaRaz;
-        if(zawartosc.masa < 0) zawartosc.masa = 0;
-        return zawartosc.masa > zwracanieNaRaz? zawartosc.podziel(zwracanieNaRaz/zawartosc.masa).get(0) : zawartosc;
+        if (zawartosc.masa < 0) zawartosc.masa = 0;
+        return zawartosc.masa > zwracanieNaRaz ? zawartosc.podziel(zwracanieNaRaz / zawartosc.masa).get(0) : zawartosc;
     }
 
     @Override

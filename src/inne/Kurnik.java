@@ -1,6 +1,5 @@
 package inne;
 
-import inne.*;
 import urzadzenia.*;
 import zwierzeta.*;
 
@@ -8,7 +7,6 @@ import java.awt.*;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
 import java.sql.Timestamp;
-import java.time.Clock;
 import java.util.*;
 
 import static inne.Logger.log;

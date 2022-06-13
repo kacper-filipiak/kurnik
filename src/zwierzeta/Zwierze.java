@@ -28,19 +28,19 @@ public abstract class Zwierze {
         pozycja = _pozycja;
     }
 
-    public void dispose(){
+    public void dispose() {
         thread.interrupt();
     }
 
     public void jedz(float kalorie) {
         glod -= kalorie;
-        if(glod < 0) glod = 0;
+        if (glod < 0) glod = 0;
         chce = ACTIONS.NIC;
     }
 
     public void pij(float litry) {
         pragnienie -= litry;
-        if(pragnienie < 0) pragnienie = 0;
+        if (pragnienie < 0) pragnienie = 0;
         chce = ACTIONS.NIC;
     }
 
@@ -49,8 +49,8 @@ public abstract class Zwierze {
             thread = new Thread(() -> {
                 lock.lock();
                 while (pozycja.x != point.x || pozycja.y != point.y) {
-                    if(pozycja.x != point.x)pozycja.x += (pozycja.x - point.x) < 0 ? 1 : -1;
-                    if(pozycja.y != point.y)pozycja.y += (pozycja.y - point.y) < 0 ? 1 : -1;
+                    if (pozycja.x != point.x) pozycja.x += (pozycja.x - point.x) < 0 ? 1 : -1;
+                    if (pozycja.y != point.y) pozycja.y += (pozycja.y - point.y) < 0 ? 1 : -1;
                     EventSubscriber.publishEvent();
                     try {
                         Thread.sleep(Speed.getTimeBase());

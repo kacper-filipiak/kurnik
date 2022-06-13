@@ -19,13 +19,13 @@ public class Poidlo extends Urzadzenie {
         return true;
     }
 
-    public void uzupelnijWode(){
+    public void uzupelnijWode() {
         zawartosc = pojemnosc;
     }
 
-    public float wydajWode(){
+    public float wydajWode() {
         zawartosc -= zwracanieNaRaz;
-        if(zawartosc < 0) zawartosc = 0;
+        if (zawartosc < 0) zawartosc = 0;
         return zwracanieNaRaz;
     }
 }

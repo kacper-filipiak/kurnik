@@ -1,7 +1,5 @@
 package urzadzenia;
 
-import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
 
 public class Pasza {
@@ -19,7 +17,7 @@ public class Pasza {
     }
 
     List<Pasza> podziel(float podzial) {
-        return List.of( new Pasza(masa * podzial), new Pasza(masa * (1 - podzial)));
+        return List.of(new Pasza(masa * podzial), new Pasza(masa * (1 - podzial)));
     }
 
     public Pasza(Pasza pasza1, Pasza pasza2) {

@@ -7,7 +7,8 @@ import java.awt.*;
 
 public class Kogut extends Drob {
     private static float zapotrzebowanieKalorii;
-    public static void setZapotrzebowanieKalorii(float zapotrzebowanie){
+
+    public static void setZapotrzebowanieKalorii(float zapotrzebowanie) {
         Kogut.zapotrzebowanieKalorii = zapotrzebowanie;
     }
 

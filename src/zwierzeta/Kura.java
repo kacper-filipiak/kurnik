@@ -10,11 +10,14 @@ import java.awt.*;
 public class Kura extends Drob {
     private boolean zaplodniona = false;
     private static float zapotrzebowanieKalorii;
-    public static void setZapotrzebowanieKalorii(float zapotrzebowanie){
+
+    public static void setZapotrzebowanieKalorii(float zapotrzebowanie) {
         Kura.zapotrzebowanieKalorii = zapotrzebowanie;
     }
+
     private static float zapotrzebowanieWody;
-    public static void setZapotrzebowanieWody(float zapotrzebowanie){
+
+    public static void setZapotrzebowanieWody(float zapotrzebowanie) {
         Kura.zapotrzebowanieWody = zapotrzebowanie;
     }
 
@@ -39,7 +42,7 @@ public class Kura extends Drob {
 
     public ACTIONS wysiadujJajko(Jajko jajo) {
         chce = ACTIONS.NIC;
-        thread = new Thread(()->{
+        thread = new Thread(() -> {
             lock.lock();
             jajo.uzywane = true;
             try {
@@ -61,7 +64,7 @@ public class Kura extends Drob {
             case 0 -> ACTIONS.BIEGAJ;
             case 1 -> ACTIONS.JEDZ;
             case 2 -> ACTIONS.PIJ;
-            case 3, 4, 7,8,9 -> ACTIONS.WYSIADUJ_JAJO;
+            case 3, 4, 7, 8, 9 -> ACTIONS.WYSIADUJ_JAJO;
             case 5, 6 -> ACTIONS.ZLOZ_JAJKO;
             default -> ACTIONS.NIC;
         };

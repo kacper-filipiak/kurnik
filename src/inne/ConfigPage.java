@@ -1,15 +1,11 @@
 package inne;
 
-import urzadzenia.*;
+import urzadzenia.Pasza;
 import zwierzeta.*;
 
 import javax.swing.*;
-import javax.swing.plaf.basic.DefaultMenuLayout;
-import java.awt.*;
-import java.util.ArrayList;
-import java.util.Arrays;
 
-public class ConfigPage extends JFrame{
+public class ConfigPage extends JFrame {
 
     static int currentPanel = 0;
     JPanel panel = new JPanel();

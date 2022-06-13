@@ -75,16 +75,16 @@ public class Gospodarz {
                     chce = ACTIONS.NAPELNIJ_POIDLO;
                 }
                 case 1 -> {
-                    chce =  ACTIONS.NAPELNIJ_PASNIK;
+                    chce = ACTIONS.NAPELNIJ_PASNIK;
                 }
                 case 2 -> {
-                    chce =  ACTIONS.ZBIERAJ_JAJKA;
+                    chce = ACTIONS.ZBIERAJ_JAJKA;
                 }
-                case 3,4,5,6 -> {
+                case 3, 4, 5, 6 -> {
                     chce = ACTIONS.BIEGAJ;
                 }
                 default -> {
-                    chce =  ACTIONS.NIC;
+                    chce = ACTIONS.NIC;
                 }
             }
         }

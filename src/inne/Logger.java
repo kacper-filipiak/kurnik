@@ -4,12 +4,11 @@ import java.io.BufferedWriter;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.sql.Timestamp;
-import java.time.Clock;
-import java.util.Date;
 
 
 public class Logger {
     static boolean clear = true;
+
     static public void log(String TAG, String message) {
         try {
             BufferedWriter writer = new BufferedWriter(new FileWriter("report.txt", !clear));
