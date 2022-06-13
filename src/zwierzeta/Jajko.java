@@ -2,7 +2,7 @@ package zwierzeta;
 
 import inne.ACTIONS;
 import org.jetbrains.annotations.Nullable;
-
+//Wykonali Kacper Filipiak i Igor Arciszewski 13.06.2022r.
 public class Jajko {
     long czasWykluwania;
     boolean zaplodnione;
@@ -14,6 +14,7 @@ public class Jajko {
         czasWykluwania = _czasWykluwania;
     }
 
+    //zmniejsza czas potrzebny do wyklucia i jesli spadnie do 0 to zwraca akcje wyklucia kurczaka
     @Nullable
     public ACTIONS zaktualizujWysiadywanie(long czas) {
         czasWykluwania -= czas;

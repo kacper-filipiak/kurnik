@@ -5,9 +5,20 @@ import inne.ACTIONS;
 import java.awt.*;
 
 import static inne.Logger.log;
-
+//Wykonali Kacper Filipiak i Igor Arciszewski 13.06.2022r.
 public abstract class Drob extends Zwierze {
     long wiek;
+
+    private static float kalorycznoscDrobiu = 1000.f;
+
+    public static void setKalorycznoscDrobiu(float kalorycznoscDrobiu) {
+        Drob.kalorycznoscDrobiu = kalorycznoscDrobiu;
+    }
+
+    public static float getKalorycznoscDrobiu() {
+        return kalorycznoscDrobiu;
+    }
+
     private static long wiekSmierci;
 
     public static void setWiekSmierci(long wiekSmierci) {
@@ -31,6 +42,7 @@ public abstract class Drob extends Zwierze {
         wiek = _wiek;
     }
 
+    //symuluje starzenie sie drobiu i zwraca Zabij sie jesli warunki smierci spelnione
     public ACTIONS starzej() {
         wiek += 5;
         glod += 10.F;

@@ -4,24 +4,30 @@ import inne.ACTIONS;
 import inne.GlobalRandom;
 
 import java.awt.*;
-
+//Wykonali Kacper Filipiak i Igor Arciszewski 13.06.2022r.
 public class Kurczak extends Drob {
     long wiekDojrzewania = 300;
     private static float zapotrzebowanieKalorii;
-    public static void setZapotrzebowanieKalorii(float zapotrzebowanie){
+
+    public static void setZapotrzebowanieKalorii(float zapotrzebowanie) {
         Kurczak.zapotrzebowanieKalorii = zapotrzebowanie;
     }
+
     private static float zapotrzebowanieWody;
-    public static void setZapotrzebowanieWody(float zapotrzebowanie){
+
+    public static void setZapotrzebowanieWody(float zapotrzebowanie) {
         Kurczak.zapotrzebowanieWody = zapotrzebowanie;
     }
+
     public Kurczak(float _glod, float _pragnienie, Point _pozycja, long _wiek) {
         super(zapotrzebowanieKalorii, zapotrzebowanieWody, _glod, _pragnienie, _pozycja, _wiek);
     }
 
-    public Kurczak(Point _pozycja){
+    public Kurczak(Point _pozycja) {
         super(zapotrzebowanieKalorii, zapotrzebowanieWody, 0, 0, _pozycja, 0);
     }
+
+    //zwraca nowa akcje jesli nie robi nic w tym momencie
     @Override
     public ACTIONS decyduj() {
         if (chce == ACTIONS.NIC) chce = switch (GlobalRandom.rand.nextInt(7)) {
@@ -34,10 +40,11 @@ public class Kurczak extends Drob {
         return chce;
     }
 
+    //Jesli juz dorosly zwraca akcje dorosniecia
     @Override
     public ACTIONS starzej() {
         super.starzej();
-        if(wiekDojrzewania < wiek) return ACTIONS.DOROSNIJ_KURCZAKA;
+        if (wiekDojrzewania < wiek) return ACTIONS.DOROSNIJ_KURCZAKA;
         else return ACTIONS.NIC;
     }
 }

@@ -1,5 +1,6 @@
 package inne;
-
+//Wykonali Kacper Filipiak i Igor Arciszewski 13.06.2022r.
+//Akcje ktore zwracaja zwierzeta i gospodarz
 public enum ACTIONS {
 
     PIJ,

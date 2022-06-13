@@ -4,10 +4,11 @@ import inne.ACTIONS;
 import inne.GlobalRandom;
 
 import java.awt.*;
-
+//Wykonali Kacper Filipiak i Igor Arciszewski 13.06.2022r.
 public class Kogut extends Drob {
     private static float zapotrzebowanieKalorii;
-    public static void setZapotrzebowanieKalorii(float zapotrzebowanie){
+
+    public static void setZapotrzebowanieKalorii(float zapotrzebowanie) {
         Kogut.zapotrzebowanieKalorii = zapotrzebowanie;
     }
 
@@ -29,6 +30,7 @@ public class Kogut extends Drob {
         kura.setZaplodniona(true);
     }
 
+    //losuje nastepna akcje dla koguta jesli nie robi nic innego
     @Override
     public ACTIONS decyduj() {
         if (chce == ACTIONS.NIC) chce = switch (GlobalRandom.rand.nextInt(6)) {

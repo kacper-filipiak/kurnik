@@ -1,7 +1,7 @@
 package urzadzenia;
 
 import java.awt.*;
-
+//Wykonali Kacper Filipiak i Igor Arciszewski 13.06.2022r.
 public class Poidlo extends Urzadzenie {
     float zwracanieNaRaz;
     float pojemnosc;
@@ -16,16 +16,17 @@ public class Poidlo extends Urzadzenie {
 
     @Override
     public boolean zajmijStanowisko() {
-        return false;
+        return true;
     }
 
-    public void uzupelnijWode(){
+    public void uzupelnijWode() {
         zawartosc = pojemnosc;
     }
+    //Wydaje wode jesli moze
 
-    public float wydajWode(){
+    public float wydajWode() {
         zawartosc -= zwracanieNaRaz;
-        if(zawartosc < 0) zawartosc = 0;
+        if (zawartosc < 0) zawartosc = 0;
         return zwracanieNaRaz;
     }
 }
