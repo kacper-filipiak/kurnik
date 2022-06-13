@@ -7,6 +7,7 @@ import zwierzeta.*;
 import java.awt.*;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
+import java.sql.Timestamp;
 import java.time.Clock;
 import java.util.*;
 
@@ -23,55 +24,35 @@ public class Kurnik extends Frame implements EventBus {
 
     private final ArrayList<Gospodarz> gospodarze = new ArrayList<>();
 
-    public Kurnik() {
+    public Kurnik(int liczbaKur, int liczbaKogutow, int liczbaGospodarzy, int liczbaLisow, int liczbaPasnikow, int liczbaPoidel, int liczbaGniazd) {
         super("Java 2D inne.Kurnik");
         EventSubscriber.subscribe(this);
         setSize(400, 300);
         fieldsX = 40;
         fieldsY = 20;
-        Drob.setWiekSmierci(1300);
-        Drob.setSmiertelnyDeficytKalorii(1000.f);
-        Drob.setSmiertelnyDeficytWody(500.f);
-        Kura.setZapotrzebowanieWody(1.f);
-        Kura.setZapotrzebowanieKalorii(2.f);
-        Kogut.setZapotrzebowanieKalorii(1.f);
-        Kogut.setZapotrzebowanieWody(2.f);
-        Kurczak.setZapotrzebowanieKalorii(1.f);
-        Kurczak.setZapotrzebowanieWody(1.f);
-        Pasza.setKalorycznosc(10.f);
-        log("START", "////////////////// " + Clock.systemUTC().toString() + " /////////////////////");
-        zwierzeta.add(new Kura(0.f, 0.f, new Point(5, 5), 100));
-        zwierzeta.add(new Kura(0.f, 0.f, new Point(5, 5), 100));
-        zwierzeta.add(new Kura(0.f, 0.f, new Point(5, 5), 100));
-        zwierzeta.add(new Kura(0.f, 0.f, new Point(5, 5), 100));
-        zwierzeta.add(new Kura(0.f, 0.f, new Point(5, 5), 100));
-        zwierzeta.add(new Kura(0.f, 0.f, new Point(5, 5), 100));
-        zwierzeta.add(new Kogut(0.f, 0.f, new Point(5, 5), 100));
+        log("START", "////////////////// " + (new Timestamp(System.currentTimeMillis())) + " /////////////////////");
+        for (int i = 0; i < liczbaKur; i++) {
+            zwierzeta.add(new Kura(0.f, 0.f, new Point(GlobalRandom.rand.nextInt(fieldsX), GlobalRandom.rand.nextInt(fieldsY)), 100));
+        }
+        for (int i = 0; i < liczbaKogutow; i++) {
+            zwierzeta.add(new Kogut(0.f, 0.f, new Point(GlobalRandom.rand.nextInt(fieldsX), GlobalRandom.rand.nextInt(fieldsY)), 100));
+        }
+        for (int i = 0; i < liczbaLisow; i++) {
+            zwierzeta.add(new Lis(new Point(GlobalRandom.rand.nextInt(fieldsX), GlobalRandom.rand.nextInt(fieldsY)), 0.2f));
+        }
+        for (int i = 0; i < liczbaGospodarzy; i++) {
+            gospodarze.add(new Gospodarz(5, new Point(GlobalRandom.rand.nextInt(fieldsX), GlobalRandom.rand.nextInt(fieldsY))));
+        }
 
-        zwierzeta.add(new Kura(0.f, 0.f, new Point(5, 5), 100));
-        zwierzeta.add(new Kura(0.f, 0.f, new Point(5, 5), 100));
-        zwierzeta.add(new Kura(0.f, 0.f, new Point(5, 5), 100));
-        zwierzeta.add(new Kura(0.f, 0.f, new Point(5, 5), 100));
-        zwierzeta.add(new Kura(0.f, 0.f, new Point(5, 5), 100));
-        zwierzeta.add(new Kura(0.f, 0.f, new Point(5, 5), 100));
-        zwierzeta.add(new Kogut(0.f, 0.f, new Point(5, 5), 100));
-
-
-        zwierzeta.add(new Kura(0.f, 0.f, new Point(5, 5), 100));
-        zwierzeta.add(new Kura(0.f, 0.f, new Point(5, 5), 100));
-        zwierzeta.add(new Kura(0.f, 0.f, new Point(5, 5), 100));
-        zwierzeta.add(new Kura(0.f, 0.f, new Point(5, 5), 100));
-        zwierzeta.add(new Kura(0.f, 0.f, new Point(5, 5), 100));
-        zwierzeta.add(new Kura(0.f, 0.f, new Point(5, 5), 100));
-        zwierzeta.add(new Kogut(0.f, 0.f, new Point(5, 5), 100));
-
-        zwierzeta.add(new Lis(new Point(10, 10), 0.2f));
-
-        gospodarze.add(new Gospodarz(5, new Point(1, 1)));
-
-        urzadzenia.add(new Poidlo(new Point(1, 4), 4, 4.f, 4.f, 500.f));
-        urzadzenia.add(new Pasnik(new Point(16, 18), 4, 10.f, new Pasza(50.f), 500.f));
-        urzadzenia.add(new Gniazdo(new Point(24, 5), 3));
+        for (int i = 0; i < liczbaPoidel; i++) {
+            urzadzenia.add(new Poidlo(new Point(GlobalRandom.rand.nextInt(fieldsX), GlobalRandom.rand.nextInt(fieldsY)), 4, 4.f, 4.f, 500.f));
+        }
+        for (int i = 0; i < liczbaPasnikow; i++) {
+            urzadzenia.add(new Pasnik(new Point(GlobalRandom.rand.nextInt(fieldsX), GlobalRandom.rand.nextInt(fieldsY)), 4, 10.f, new Pasza(50.f), 500.f));
+        }
+        for (int i = 0; i < liczbaGniazd; i++) {
+            urzadzenia.add(new Gniazdo(new Point(GlobalRandom.rand.nextInt(fieldsX), GlobalRandom.rand.nextInt(fieldsY)), 3));
+        }
 
         setVisible(true);
         addWindowListener(new WindowAdapter() {
@@ -347,7 +328,7 @@ public class Kurnik extends Frame implements EventBus {
             System.out.println(".");
             if (zwierzeta.size() > fieldsX * fieldsY) break;
             try {
-                Thread.sleep(100);
+                Thread.sleep(10 * Speed.getTimeBase());
             } catch (InterruptedException e) {
                 throw new RuntimeException(e);
             }

@@ -16,7 +16,7 @@ public class Poidlo extends Urzadzenie {
 
     @Override
     public boolean zajmijStanowisko() {
-        return false;
+        return true;
     }
 
     public void uzupelnijWode(){

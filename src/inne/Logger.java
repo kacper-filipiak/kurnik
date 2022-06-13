@@ -26,6 +26,5 @@ public class Logger {
         } catch (IOException exception) {
             System.err.println(exception.getMessage());
         }
-
     }
 }

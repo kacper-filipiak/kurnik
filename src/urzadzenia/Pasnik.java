@@ -25,6 +25,6 @@ public class Pasnik extends Urzadzenie {
 
     @Override
     boolean zajmijStanowisko() {
-        return false;
+        return true;
     }
 }

@@ -2,6 +2,7 @@ package zwierzeta;
 
 import inne.ACTIONS;
 import inne.EventSubscriber;
+import inne.Speed;
 
 import java.awt.*;
 import java.util.concurrent.locks.ReentrantLock;
@@ -52,7 +53,7 @@ public abstract class Zwierze {
                     if(pozycja.y != point.y)pozycja.y += (pozycja.y - point.y) < 0 ? 1 : -1;
                     EventSubscriber.publishEvent();
                     try {
-                        Thread.sleep(10);
+                        Thread.sleep(Speed.getTimeBase());
                     } catch (InterruptedException e) {
                         throw new RuntimeException(e);
                     }

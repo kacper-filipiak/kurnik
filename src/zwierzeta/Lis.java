@@ -6,8 +6,11 @@ import inne.GlobalRandom;
 import java.awt.*;
 
 public class Lis extends Zwierze {
-    float wspolczynnikSzansAtaku;
+    static float wspolczynnikSzansAtaku = 0.2f;
 
+    public static void setWspolczynnikSzansAtaku(float _wspolczynnikSzansAtaku){
+        wspolczynnikSzansAtaku = _wspolczynnikSzansAtaku;
+    }
     static float _zapotrzebowanieEnergetyczne = 100.f;
 
     public static void setZapotrzebowanieEnergetyczne(float zapotrzebowanieEnergetyczne) {

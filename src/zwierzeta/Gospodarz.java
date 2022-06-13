@@ -1,8 +1,6 @@
 package zwierzeta;
 
-import inne.ACTIONS;
-import inne.EventSubscriber;
-import inne.GlobalRandom;
+import inne.*;
 import urzadzenia.Gniazdo;
 import urzadzenia.Pasnik;
 import urzadzenia.Pasza;
@@ -43,6 +41,7 @@ public class Gospodarz {
             if (jajko != null) {
                 gniazdo.usunJajko(jajko);
                 zebraneJajka++;
+                Logger.log("ZEBRANO_JAJKO", "1");
             } else {
                 break;
             }
@@ -58,7 +57,7 @@ public class Gospodarz {
                     if (pozycja.y != point.y) pozycja.y += (pozycja.y - point.y) < 0 ? 1 : -1;
                     EventSubscriber.publishEvent();
                     try {
-                        Thread.sleep(10);
+                        Thread.sleep(Speed.getTimeBase());
                     } catch (InterruptedException e) {
                         throw new RuntimeException(e);
                     }
