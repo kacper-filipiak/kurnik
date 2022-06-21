@@ -3,7 +3,7 @@
 
 
 [Prezentacja](https://docs.google.com/presentation/d/1b0SLi5va-X2dcePTUBTf-ByN1WsNuE8u/edit?usp=drivesdk&ouid=105620903563646506244&rtpof=true&sd=true)
-
+[Dokumentacja](https://github.com/kacper-filipiak/kurnik/tree/main/docs)
 1. Drob - Wykorzystuje poidło i paśnik, aby uzupełniać wodę i kalorie. Jeśli jedno z nich będzie mieć zbyt duży deficyt drób umiera. Ponadto drób może umżeć ze strarości bądź zostać zabity przez lisa. Gdy znajduje się on w pobliżu gospodarza to rozbiega się w losową stronę. 
 2. Kura - Używa gniazda do składania i wysiadywania jaj. Jeśli zapłodniona składa zapłodnione jajko z którego wykluwa się kurczak.
 3. Jajko - Gdy wysiadywane zmniejsza się czas do wyklucia. Jeśli zapłodnione wykluwa kurczaka.
